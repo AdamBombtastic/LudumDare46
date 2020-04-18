@@ -27,6 +27,10 @@ let introState = {
     introState : null,
     hasProgressed : false,
 
+    toMain() {
+        game.scene.stop("intro")
+        game.scene.start('mainState');
+    },
     preload : function() {},
     create : function() {
         introState.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -45,8 +49,7 @@ let introState = {
                 introState.selectedIndex += 1;
                 if (introState.selectedIndex >= textArray.length) {
                     introState.selectedIndex = textArray.length-1;
-                    game.scene.stop("intro")
-                    game.scene.start('mainState');
+                    introState.toMain();
                 }
             }
             introState.introText.x = 400 - (introState.introText.width/2);
@@ -54,8 +57,7 @@ let introState = {
         }
         if (introState.keySpace.isDown && !introState.hasProgressed) {
             introState.hasProgressed = true;
-            game.scene.stop("intro")
-            game.scene.start('mainState');
+            introState.toMain();
         }
     }
 }
@@ -75,9 +77,15 @@ let mainState = {
         hitBall : false,
         swingTime : 500, //ms
         homeRuns : 0,
+        playerSprite : null,
+        swingAnim : null,
+
     },
     preload : function() {
-
+        this.load.spritesheet('player','Sprites/Batter.png',{
+            frameWidth: 62,
+            frameHeight: 62,
+        });
     },
     create : function() {
         let state = mainState.state;
@@ -97,8 +105,31 @@ let mainState = {
         state.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         mainState.scoreText = this.add.text(0, 0, ``, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif' });
 
-
-        
+        //player stuff
+        state.playerSprite = this.add.sprite(80,config.height-200,'player').setScale(2);
+        state.swingAnim = this.anims.create({
+            key: 'swing',
+            frames: this.anims.generateFrameNumbers('player'),
+            frameRate: 18,
+            yoyo: false,
+            repeat: 0 
+        });
+        state.idleAnim = this.anims.create({
+            key: 'idle',
+            frames: [{key:'player',frame:0}],
+            frameRate: 1,
+            yoyo: false,
+            repeat: -1,
+        });
+        state.playerSprite.anims.load('swing');
+        state.playerSprite.anims.load('idle');
+        state.playerSprite.on("animationcomplete",function(animation,frame) {
+            console.log("animation-complete",animation);
+            if (animation.key == 'swing') {
+                state.playerSprite.anims.play('idle');
+            }
+        },this);
+        console.log('Swing Anim Frames:',this.anims.generateFrameNumbers('player'));
     },
     update : function() {
         let state = mainState.state;
@@ -114,6 +145,7 @@ let mainState = {
         state.line.x -= state.lineSpeed;
 
         if (state.keySpace.isDown && !state.hasSwung) {
+            state.playerSprite.anims.play('swing');
             state.hasSwung = true;
             state.hitBall = Phaser.Geom.Intersects.RectangleToRectangle(state.targetRect,state.line);
             if (state.hitBall) {
