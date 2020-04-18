@@ -1,5 +1,12 @@
+
 # LudumDare46
 
+#Requirements
+
+Please install node.js 
+https://nodejs.org/en/download/
+
+#Installation
 Navigate to the directory
 
 run "npm install"
