@@ -1,0 +1,22 @@
+{
+  "name": "ludum-dare-game-46",
+  "version": "1.0.0",
+  "description": "A game for Ludum Dare 46",
+  "main": "server.js",
+  "scripts": {
+    "serve": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdamBombtastic/LudumDare46.git"
+  },
+  "author": "Adam Austin & Gage Bradley",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AdamBombtastic/LudumDare46/issues"
+  },
+  "homepage": "https://github.com/AdamBombtastic/LudumDare46#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
