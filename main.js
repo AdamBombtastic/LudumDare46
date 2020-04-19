@@ -10,7 +10,7 @@ var config = {
 let teamName = "<INSERT_NAME_HERE>";
 let badTeamName = "Back City Bad Boyz"
 let coachName = "<COACH_NAME>"
-let textArray = [
+/*let textArray = [
     `It is the worst day of your middle school career . . .`,
     `It's bottom of the 9th and your baseball team, ${teamName}, 
      is in the championship 
@@ -19,48 +19,167 @@ let textArray = [
      his entire life, but the dream is almost dead. 
      You're down 20 points.`,
     `Keep the dream alive and hit some home runs!!!`,
-];
+];*/
+let textArray = [
+    `The year was 1977 . . .`,
+    `I was in the 8th grade and having the little league season of my life.`,
+    `Every hit was a whammy. Every pitch a hotdog for me to devour.`,
+    `All the girls wanted to go to the roller rink with me, including Lisa Sherman, the love of my life.`,
+    `Our team was undefeated and we made our way to the State championships to play against our rivals
+    -- the Back City Bad Boyz.`,
+    `It was the game of a lifetime. Overtime. I'm up to Bat. Bases loaded.`,
+    `The pitcher was known for his 'Heater', an unhittable pitch of insane speed.`,
+    `I tried my best, but I struck out then. Lost the game and lost the love of my life.`,
+    `. . . But today, we have a chance to reclaim that.`,
+    `You're the first team that has made it to nationals since!`,
+    `It's bottom of the 9th and we're down by 20. Keep my dream alive!`,
+]
 let introState = {
     selectedIndex : 0,
     textIndex : 0,
     introText : null,
     textTicker : 0,
-    textTickerTimeMs: 35,
+    textTickerTimeMs: 65,
     introState : null,
-    hasProgressed : false,
+    hasProgressed : true,
+    skipped : false,
 
     toMain() {
         game.scene.stop("intro")
         game.scene.start('mainState');
     },
-    preload : function() {},
+    preload : function() {
+        this.load.spritesheet('coach','Sprites/Coach.png',{
+            frameWidth: 51,
+            frameHeight: 49,
+        });
+        this.load.spritesheet('coachBatter','Sprites/Batter_coach.png',{
+            frameWidth: 64,
+            frameHeight: 64,
+        });
+        this.load.spritesheet('pitcher','Sprites/Pitcher.png',{
+            frameWidth:42,
+            frameHeight:47,
+        });
+        this.load.spritesheet('baseball','Sprites/Baseball.png',{
+            frameWidth: 30,
+            frameHeight: 30,
+        });
+        //this.load.audio('hitSoundCheer','Audio/hitcrowdcheer.mp3');
+        
+    },
     create : function() {
+        introState.coachSprite = this.add.sprite(80,80,'coach').setScale(2);
+        introState.coachBatterSprite = this.add.sprite(80,config.height-200,'coachBatter').setScale(2);
+        introState.coachBatterSprite.alpha = 0;
+        introState.pitcherSprite = this.add.sprite(config.width-20,config.height-185,'pitcher').setScale(2);
+        introState.pitcherSprite.alpha = 0;
+        this.anims.create({
+            key: 'coach_talk',
+            frames: [{key:'coach',frame:2},{key:'coach',frame:3}],
+            frameRate: 8,
+            yoyo: false,
+            repeat: -1,
+        });
+        this.anims.create({
+            key: 'coach_idle',
+            frames: [{key:'coach',frame:0},{key:'coach',frame:1},{key:'coach',frame:1}],
+            frameRate: 2,
+            yoyo: true,
+            repeat: -1,
+        });
+         this.anims.create({
+            key: 'coachSwing',
+            frames: this.anims.generateFrameNumbers('coachBatter'),
+            frameRate: 18,
+            yoyo: false,
+            repeat: 0 
+        });
+        this.anims.create({
+            key: 'coachSwingIdle',
+            frames: [this.anims.generateFrameNumbers('coachBatter')[0]],
+            frameRate: 18,
+            yoyo: false,
+            repeat: 0 
+        });
+        this.anims.create({
+            key: 'coachPitcherIdle',
+            frames: [this.anims.generateFrameNumbers('pitcher')[0]],
+            frameRate: 1,
+            yoyo: false,
+            repeat:- 1,
+        })
+        this.anims.create({
+            key: 'coachPitcherPitch',
+            frames: this.anims.generateFrameNumbers('pitcher'),
+            frameRate: 4,
+            yoyo: false,
+            repeat: 0,
+        })
+        introState.coachSprite.anims.load("coach_talk");
+        introState.coachSprite.anims.load("coach_idle");
+        introState.coachSprite.anims.play("coach_talk");
+        
+        introState.coachBatterSprite.anims.load("coachSwing");
+        introState.pitcherSprite.anims.load("coachPitcherIdle");
+        introState.pitcherSprite.anims.load("coachPitcherPitch");
+        introState.pitcherSprite.play("coachPitcherIdle");
+       
+        introState.hitCheer = this.sound.add('hitSoundCheer');
+
         introState.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-        introState.introText = this.add.text(0, 0, '', { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif' });
+        introState.keyEsc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        introState.introText = this.add.text(0, 0, '', 
+        { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif',align: "left", fixedWidth: 500,
+            wordWrap: { width: 450, useAdvancedWrap: true } });
     },
     update : function(time,delta) {
         introState.textTicker += delta;
         if (introState.textTickerTimeMs < introState.textTicker) {
-            let textSelection = textArray[introState.selectedIndex].substring(0,introState.textIndex);
+            let textSelection = "COACH: " + textArray[introState.selectedIndex].substring(0,introState.textIndex);
+            //textSelection += "\n <PRESS SPACE>";
             introState.introText.text = textSelection;
             introState.introText.updateText();
             introState.textIndex++;
             introState.textTicker = 0;
             if (introState.textIndex > textArray[introState.selectedIndex].length) {
-                introState.textIndex = 0;
-                introState.selectedIndex += 1;
-                if (introState.selectedIndex >= textArray.length) {
-                    introState.selectedIndex = textArray.length-1;
-                    introState.toMain();
-                }
+                introState.hasProgressed = false;
+                introState.coachSprite.play("coach_idle");
             }
-            introState.introText.x = 320 - (introState.introText.width/2);
-            introState.introText.y = 240 - (introState.introText.height/2);
+            introState.introText.x = 160;
+            introState.introText.y = 40;
         }
         if (introState.keySpace.isDown && !introState.hasProgressed) {
             introState.hasProgressed = true;
-            introState.toMain();
+            introState.selectedIndex += 1;
+            introState.textIndex = 0;
+            introState.coachSprite.play("coach_talk");
+            if (introState.selectedIndex >= textArray.length) {
+                introState.selectedIndex = textArray.length-1;
+                introState.toMain();
+            }
         }
+        if (introState.keyEsc.isDown && !introState.skipped ) {
+            introState.toMain();
+            introState.skipped = true;
+        }
+
+        if (introState.selectedIndex == 2) {
+            introState.coachBatterSprite.alpha = 1;
+        } else if (introState.selectedIndex == 3) {
+            introState.coachBatterSprite.play("coachSwing");
+            //introState.hitCheer.play();
+        } else if (introState.selectedIndex == 5) {
+            introState.pitcherSprite.alpha = 1;
+            introState.coachBatterSprite.play("coachSwingIdle")
+        } 
+        else if (introState.selectedIndex == 6) {
+            introState.pitcherSprite.play("coachPitcherPitch");
+        }
+        else if (introState.selectedIndex == 7) {
+            introState.coachBatterSprite.play("coachSwing");
+        }
+
     }
 }
 //endregion
@@ -77,18 +196,19 @@ function createMainState() {
         keySpace : null,
         hasSwung : false,
         hitBall : false,
-        hasMissed: false,
+        hasMissed : false,
         swingTime : 500, //ms
         homeRuns : 0,
         playerSprite : null,
+        pitcherSprite: null,
         swingAnim : null,
         ballAnims : {'fast': null, 'normal' : null, 'slow':null, 'hit':null},
         ballSprite : null,
-        needsRespawn : false,
+        ballType : null,
+        needsRespawn : true,
         impactAnim : null,
         strikeText : null,
         strikeCount : 0,
-
     }
 }
 let mainState = {
@@ -176,6 +296,7 @@ let mainState = {
         this.load.audio('hitSound','Audio/hit.mp3');
     },
     create : function() {
+        mainState.state = createMainState();
         let state = mainState.state;
         this.cameras.main.backgroundColor = Phaser.Display.Color.HexStringToColor("#D97031");
 
