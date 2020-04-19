@@ -110,6 +110,7 @@ let mainState = {
         swingAnim : null,
         ballAnims : {'fast': null, 'normal' : null, 'slow':null, 'hit':null},
         ballSprite : null,
+        ballType : null,
         needsRespawn : true,
         impactAnim : null,
         strikeText : null,
@@ -119,15 +120,17 @@ let mainState = {
     createPitch(type,game) {
         console.log("creating pitch:",type);
         let state = mainState.state;
+        state.ballType = type;
         if (state.ballSprite != null) {
             state.ballSprite.destroy();
         }
         let bball = game.add.sprite(config.width,config.height-200,'baseball').setScale(2);
+        bball.anims.load('bball_flash');
         switch (type) {
             case "fast":
                 bball.anims.load('bball_fast');
                 bball.anims.play('bball_fast');
-                state.lineSpeed = 20;
+                state.lineSpeed = 22;
                 break;
             case "slow":
                 bball.anims.load('bball_slow');
@@ -162,10 +165,56 @@ let mainState = {
             frameWidth:42,
             frameHeight:47,
         });
+        this.load.spritesheet('coach','Sprites/Coach.png',{
+            frameWidth: 51,
+            frameHeight: 49,
+        });
+        this.load.image('fg_fence',"Sprites/Dialog_foreground.png");
     },
     create : function() {
         let state = mainState.state;
-        this.cameras.main.backgroundColor = Phaser.Display.Color.HexStringToColor("#444");
+        this.cameras.main.backgroundColor = Phaser.Display.Color.HexStringToColor("#D97031");
+
+        //background & coach stuff
+        this.anims.create({
+            key: 'coach_idle',
+            frames: [{key:'coach',frame:0},{key:'coach',frame:1},{key:'coach',frame:1}],
+            frameRate: 2,
+            yoyo: true,
+            repeat: -1,
+        });
+        this.anims.create({
+            key: 'coach_talk',
+            frames: [{key:'coach',frame:2},{key:'coach',frame:3}],
+            frameRate: 8,
+            yoyo: false,
+            repeat: -1,
+        });
+        this.anims.create({
+            key: 'coach_strike',
+            frames: [{key:'coach',frame:4},{key:'coach',frame:5},
+                     {key:'coach',frame:6},{key:'coach',frame:7}],
+            frameRate: 8,
+            yoyo: false,
+            repeat: -1,
+        });
+        this.anims.create({
+            key: 'coach_whammy',
+            frames: [{key:'coach',frame:8},{key:'coach',frame:9},
+                     {key:'coach',frame:10},{key:'coach',frame:11}],
+            frameRate: 8,
+            yoyo: false,
+            repeat: -1,
+        });
+        state.coach = this.add.sprite(280,config.height-185,'coach').setScale(2);
+        state.fg = this.add.sprite(158,284,'fg_fence').setScale(3);
+
+        state.coach.anims.load('coach_idle');
+        state.coach.anims.load('coach_strike');
+        state.coach.anims.load('coach_whammy');
+        state.coach.anims.play('coach_idle');
+        
+
         state.barRect = new Phaser.Geom.Rectangle(30,config.height-100,config.width-60,30);
         state.graphics = this.add.graphics({
             fillStyle:{
@@ -176,12 +225,14 @@ let mainState = {
                 width: 4,
             }
         });
-        state.targetRect = new Phaser.Geom.Rectangle(70,config.height-100,70,30);
+        state.targetRect = new Phaser.Geom.Rectangle(65,config.height-100,80,30);
         state.line = new Phaser.Geom.Rectangle(state.lineX-2,0,2,config.height);
     
         state.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         mainState.scoreText = this.add.text(0, 0, ``, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif' });
         state.strikeText = this.add.text(30, 150, ``, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif', fontSize: 44 });
+
+        
 
         //player stuff
         state.playerSprite = this.add.sprite(80,config.height-200,'player').setScale(2);
@@ -242,11 +293,9 @@ let mainState = {
             frames: [{key:'baseball',frame:12},{key:'baseball',frame:13}],
             frameRate: 18,
             yoyo: false,
-            repeat: 1,
+            repeat: -1,
         });
         let pitchFrames = this.anims.generateFrameNumbers('pitcher');
-        let normalFrames = pitchFrames.slice(0,pitchFrames.length-1);
-        let endFrame = [pitchFrames[pitchFrames.length-1]];
         this.anims.create({
            key: 'pitcher_pitch_normal',
            frames: pitchFrames.slice(0,pitchFrames.length-1),
@@ -268,9 +317,10 @@ let mainState = {
             yoyo: false,
             repeat: -1,
         });
+     
         
         //pitcher
-        state.pitcherSprite = this.add.sprite(config.width-20,config.height-200,'pitcher').setScale(2);
+        state.pitcherSprite = this.add.sprite(config.width-20,config.height-185,'pitcher').setScale(2);
 
         state.pitcherSprite.anims.load('pitcher_idle');
         state.pitcherSprite.anims.load('pitcher_pitch_normal');
@@ -289,6 +339,7 @@ let mainState = {
             else if (animation.key == 'pitcher_pitch_end') {
                 //console.log(animation.key,frame.index);
                 state.pitcherSprite.play("pitcher_idle");
+                state.coach.anims.play('coach_idle');
             }
         });
 
@@ -310,16 +361,30 @@ let mainState = {
         let state = mainState.state;
         let graphics = state.graphics;
         graphics.clear();
-        graphics.fillStyle(0xFF0000,1);
+        
+        /*graphics.fillStyle(0xFF0000,1);
         graphics.fillRectShape(state.barRect);
         graphics.fillStyle(state.hasSwung ? state.hitBall ? 0x00FF00 : 0x0000FF : 0xFFFF00,1);
         graphics.fillRectShape(state.targetRect);
         graphics.fillStyle(0xFFFFFF,1);
-        graphics.fillRectShape(state.line);
+        graphics.fillRectShape(state.line);*/
 
-        
+
+
         //if the pitcher isn't pitching
         if (!state.needsRespawn) {
+            //Let's check if we should make the ball flash
+            if (Phaser.Geom.Intersects.RectangleToRectangle(state.targetRect,state.line)
+            && (!state.hasSwung && !state.hasMissed)) {
+
+                if (state.ballSprite.anims.currentAnim.key != 'bball_flash') {
+                    state.ballSprite.anims.play('bball_flash');
+                }
+            } else {
+                if (state.ballSprite.anims.currentAnim.key != 'bball_'+state.ballType) {
+                    state.ballSprite.anims.play("bball_"+state.ballType);
+                }
+            }
             //check if the player has swung
             if (state.keySpace.isDown && !state.hasSwung) {
                 state.playerSprite.anims.play('swing');
@@ -330,6 +395,7 @@ let mainState = {
                     state.homeRuns += 1;
                     state.ballSprite.anims.load("bball_hit");
                     state.ballSprite.anims.play("bball_hit");
+                    state.coach.anims.play('coach_whammy');
                     state.strikeText.text="WHAMMY!!";
                     state.strikeText.updateText();
                     let impact = this.add.sprite(state.ballSprite.x,state.ballSprite.y,'impact').setScale(2);
@@ -370,6 +436,7 @@ let mainState = {
             } else if (state.line.x < 0 && !state.hasMissed) {
                 state.hasMissed = true;
                 state.strikeText.text="STRIKE!!";
+                state.coach.anims.play('coach_strike');
                 state.strikeText.updateText();
                 state.strikeCount +=1;
                 this.time.delayedCall(750, function() {
@@ -389,7 +456,7 @@ let mainState = {
             }    
         } 
         mainState.scoreText.x = config.width-(mainState.scoreText.width+30);
-        mainState.scoreText.y = 60;
+        mainState.scoreText.y = 30;
         mainState.scoreText.text = `${state.homeRuns} whammies!`;
         mainState.scoreText.updateText();
     }
