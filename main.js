@@ -165,6 +165,10 @@ let mainState = {
             frameWidth:42,
             frameHeight:47,
         });
+        this.load.spritesheet('coach','Sprites/Coach.png',{
+            frameWidth: 51,
+            frameHeight: 49,
+        });
         this.load.image('fg_fence',"Sprites/Dialog_foreground.png");
     },
     create : function() {
@@ -172,8 +176,44 @@ let mainState = {
         this.cameras.main.backgroundColor = Phaser.Display.Color.HexStringToColor("#D97031");
 
         //background & coach stuff
-
+        this.anims.create({
+            key: 'coach_idle',
+            frames: [{key:'coach',frame:0},{key:'coach',frame:1},{key:'coach',frame:1}],
+            frameRate: 2,
+            yoyo: true,
+            repeat: -1,
+        });
+        this.anims.create({
+            key: 'coach_talk',
+            frames: [{key:'coach',frame:2},{key:'coach',frame:3}],
+            frameRate: 8,
+            yoyo: false,
+            repeat: -1,
+        });
+        this.anims.create({
+            key: 'coach_strike',
+            frames: [{key:'coach',frame:4},{key:'coach',frame:5},
+                     {key:'coach',frame:6},{key:'coach',frame:7}],
+            frameRate: 8,
+            yoyo: false,
+            repeat: -1,
+        });
+        this.anims.create({
+            key: 'coach_whammy',
+            frames: [{key:'coach',frame:8},{key:'coach',frame:9},
+                     {key:'coach',frame:10},{key:'coach',frame:11}],
+            frameRate: 8,
+            yoyo: false,
+            repeat: -1,
+        });
+        state.coach = this.add.sprite(280,config.height-185,'coach').setScale(2);
         state.fg = this.add.sprite(158,284,'fg_fence').setScale(3);
+
+        state.coach.anims.load('coach_idle');
+        state.coach.anims.load('coach_strike');
+        state.coach.anims.load('coach_whammy');
+        state.coach.anims.play('coach_idle');
+        
 
         state.barRect = new Phaser.Geom.Rectangle(30,config.height-100,config.width-60,30);
         state.graphics = this.add.graphics({
@@ -277,6 +317,7 @@ let mainState = {
             yoyo: false,
             repeat: -1,
         });
+     
         
         //pitcher
         state.pitcherSprite = this.add.sprite(config.width-20,config.height-185,'pitcher').setScale(2);
