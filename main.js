@@ -7,15 +7,17 @@ var config = {
 //endregion
 
 //region "Intro Story State"
-let teamName = "<INSERT_NAME_HER>";
+let teamName = "<INSERT_NAME_HERE>";
 let badTeamName = "Back City Bad Boyz"
 let coachName = "<COACH_NAME>"
 let textArray = [
     `It is the worst day of your middle school career . . .`,
-    `It's bottom of the 9th and your baseball team, ${teamName}, is in the championship 
+    `It's bottom of the 9th and your baseball team, ${teamName}, 
+     is in the championship 
      game against the ${badTeamName}!`,
-    `${coachName} has been dreaming of this moment his entire life, 
-     but the dream is almost dead. You're down 20 points.`,
+    `${coachName} has been dreaming of this moment 
+     his entire life, but the dream is almost dead. 
+     You're down 20 points.`,
     `Keep the dream alive and hit some home runs!!!`,
 ];
 let introState = {
@@ -52,8 +54,8 @@ let introState = {
                     introState.toMain();
                 }
             }
-            introState.introText.x = 400 - (introState.introText.width/2);
-            introState.introText.y = 300 - (introState.introText.height/2);
+            introState.introText.x = 320 - (introState.introText.width/2);
+            introState.introText.y = 240 - (introState.introText.height/2);
         }
         if (introState.keySpace.isDown && !introState.hasProgressed) {
             introState.hasProgressed = true;
@@ -64,6 +66,30 @@ let introState = {
 //endregion
 
 //region "Main State"
+function createMainState() {
+    return {
+        barRect : null,
+        targetRect : null,
+        line : null,
+        lineX: config.width,
+        lineSpeed : 14,
+        graphics : null,
+        keySpace : null,
+        hasSwung : false,
+        hitBall : false,
+        swingTime : 500, //ms
+        homeRuns : 0,
+        playerSprite : null,
+        swingAnim : null,
+        ballAnims : {'fast': null, 'normal' : null, 'slow':null, 'hit':null},
+        ballSprite : null,
+        needsRespawn : false,
+        impactAnim : null,
+        strikeText : null,
+        strikeCount : 0,
+
+    }
+}
 let mainState = {
     state : {
         barRect : null,
@@ -83,6 +109,8 @@ let mainState = {
         ballSprite : null,
         needsRespawn : false,
         impactAnim : null,
+        strikeText : null,
+        strikeCount : 0,
 
     },
     createPitch(type,game) {
@@ -145,6 +173,7 @@ let mainState = {
     
         state.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         mainState.scoreText = this.add.text(0, 0, ``, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif' });
+        state.strikeText = this.add.text(30, 150, ``, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif', fontSize: 44 });
 
         //player stuff
         state.playerSprite = this.add.sprite(80,config.height-200,'player').setScale(2);
@@ -234,10 +263,19 @@ let mainState = {
 
         if (state.line.x < 0 && !state.needsRespawn) {
             state.needsRespawn = true;
-
+            state.strikeText.text="STRIKE!!";
+            state.strikeText.updateText();
+            state.strikeCount +=1;
             this.time.delayedCall(750, function() {
                 console.log("missed the ball -- creating pitch");
+                state.strikeText.text="";
+                state.strikeText.updateText();
                 state.line.x = config.width;
+                if (state.strikeCount >= 3) {
+                    game.scene.stop("mainState")
+                    game.scene.start('intro');
+                    //mainState.state = createMainState();
+                }
                 mainState.createPitch(['normal','fast','slow'][parseInt(Math.random()*3)],this);
                 state.needsRespawn = false;
             }, [], this);
@@ -269,6 +307,8 @@ let mainState = {
                 let impact = this.add.sprite(state.ballSprite.x,state.ballSprite.y,'impact').setScale(2);
                 impact.anims.load("impact");
                 impact.anims.play("impact");
+                state.strikeText.text="WHAMMY!!";
+                state.strikeText.updateText();
                 impact.on("animationcomplete",function(animation,frame) {
                     //console.log("animation-complete",animation);
                     if (animation.key == 'impact') {
@@ -277,6 +317,9 @@ let mainState = {
                 },this);
                 this.time.delayedCall(1000, function() {
                     console.log("hit the ball created pitch");
+                    state.strikeText.text="";
+                    state.strikeText.updateText();
+                    state.strikeCount = 0;
                     mainState.createPitch(['normal','fast','slow'][parseInt(Math.random()*3)],this);
                     state.needsRespawn = false;
                 }, [], this);
