@@ -1,0 +1,114 @@
+{ "frames": {
+   "Coach 0.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 51, "h": 49 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 51, "h": 49 },
+    "sourceSize": { "w": 51, "h": 49 },
+    "duration": 100
+   },
+   "Coach 1.aseprite": {
+    "frame": { "x": 51, "y": 0, "w": 51, "h": 49 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 51, "h": 49 },
+    "sourceSize": { "w": 51, "h": 49 },
+    "duration": 100
+   },
+   "Coach 2.aseprite": {
+    "frame": { "x": 102, "y": 0, "w": 51, "h": 49 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 51, "h": 49 },
+    "sourceSize": { "w": 51, "h": 49 },
+    "duration": 100
+   },
+   "Coach 3.aseprite": {
+    "frame": { "x": 153, "y": 0, "w": 51, "h": 49 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 51, "h": 49 },
+    "sourceSize": { "w": 51, "h": 49 },
+    "duration": 100
+   },
+   "Coach 4.aseprite": {
+    "frame": { "x": 204, "y": 0, "w": 51, "h": 49 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 51, "h": 49 },
+    "sourceSize": { "w": 51, "h": 49 },
+    "duration": 100
+   },
+   "Coach 5.aseprite": {
+    "frame": { "x": 255, "y": 0, "w": 51, "h": 49 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 51, "h": 49 },
+    "sourceSize": { "w": 51, "h": 49 },
+    "duration": 100
+   },
+   "Coach 6.aseprite": {
+    "frame": { "x": 306, "y": 0, "w": 51, "h": 49 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 51, "h": 49 },
+    "sourceSize": { "w": 51, "h": 49 },
+    "duration": 100
+   },
+   "Coach 7.aseprite": {
+    "frame": { "x": 357, "y": 0, "w": 51, "h": 49 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 51, "h": 49 },
+    "sourceSize": { "w": 51, "h": 49 },
+    "duration": 100
+   },
+   "Coach 8.aseprite": {
+    "frame": { "x": 408, "y": 0, "w": 51, "h": 49 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 51, "h": 49 },
+    "sourceSize": { "w": 51, "h": 49 },
+    "duration": 100
+   },
+   "Coach 9.aseprite": {
+    "frame": { "x": 459, "y": 0, "w": 51, "h": 49 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 51, "h": 49 },
+    "sourceSize": { "w": 51, "h": 49 },
+    "duration": 100
+   },
+   "Coach 10.aseprite": {
+    "frame": { "x": 510, "y": 0, "w": 51, "h": 49 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 51, "h": 49 },
+    "sourceSize": { "w": 51, "h": 49 },
+    "duration": 100
+   },
+   "Coach 11.aseprite": {
+    "frame": { "x": 561, "y": 0, "w": 51, "h": 49 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 51, "h": 49 },
+    "sourceSize": { "w": 51, "h": 49 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.8",
+  "image": "C:\\Users\\gadge_000\\Desktop\\LudumDare46\\Aseprite Files\\Coach.png",
+  "format": "RGBA8888",
+  "size": { "w": 612, "h": 49 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Coach", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}
