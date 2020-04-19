@@ -297,8 +297,55 @@ let mainState = {
         });
         let pitchFrames = this.anims.generateFrameNumbers('pitcher');
         this.anims.create({
+            key: 'pitcher_pitch_windup',
+            frames: [
+                {key:'pitcher',frame:0},
+                {key:'pitcher',frame:1},
+                {key:'pitcher',frame:2},
+            ],
+            frameRate: 4,
+            yoyo: false,
+            repeat: 0,
+        });
+        this.anims.create({
+            key: 'pitcher_pitch_tell_normal',
+            frames: [
+                {key:'pitcher',frame:3},
+                {key:'pitcher',frame:4},
+                {key:'pitcher',frame:3},
+                {key:'pitcher',frame:2},
+            ],
+            frameRate: 2,
+            yoyo: false,
+            repeat: 0,
+        });
+        this.anims.create({
+            key: 'pitcher_pitch_tell_fast',
+            frames: [
+                {key:'pitcher',frame:4},
+                {key:'pitcher',frame:2},
+                {key:'pitcher',frame:3},
+                {key:'pitcher',frame:4},
+            ],
+            frameRate: 2,
+            yoyo: false,
+            repeat: 0,
+        });
+        this.anims.create({
+            key: 'pitcher_pitch_tell_slow',
+            frames: [
+                {key:'pitcher',frame:2},
+                {key:'pitcher',frame:2},
+                {key:'pitcher',frame:2},
+                {key:'pitcher',frame:3},
+            ],
+            frameRate: 2,
+            yoyo: false,
+            repeat: 0,
+        });
+        this.anims.create({
            key: 'pitcher_pitch_normal',
-           frames: pitchFrames.slice(0,pitchFrames.length-1),
+           frames: pitchFrames.slice(5,pitchFrames.length-1),
            frameRate:6,
            yoyo: false,
            repeat: 0, 
@@ -324,15 +371,26 @@ let mainState = {
 
         state.pitcherSprite.anims.load('pitcher_idle');
         state.pitcherSprite.anims.load('pitcher_pitch_normal');
+        state.pitcherSprite.anims.load("pitcher_pitch_windup");
+        state.pitcherSprite.anims.load("pitcher_pitch_tell_normal");
+        state.pitcherSprite.anims.load("pitcher_pitch_tell_slow");
+        state.pitcherSprite.anims.load("pitcher_pitch_tell_fast");
         state.pitcherSprite.anims.load('pitcher_pitch_end');
         state.pitcherSprite.anims.play('pitcher_idle');
         const gameInstance = this;
         state.pitcherSprite.on("animationcomplete",function(animation,frame){
             console.log(animation.key," ending");
-            if (animation.key=='pitcher_pitch_normal') {
+            if (animation.key=='pitcher_pitch_windup') {
+                state.ballType = ["normal","fast","slow"][parseInt(Math.random()*3)];
+                state.pitcherSprite.play("pitcher_pitch_tell_"+state.ballType);
+            } 
+            else if (animation.key.indexOf("pitcher_pitch_tell_") != -1) {
+                state.pitcherSprite.play("pitcher_pitch_normal");
+            }
+            else if (animation.key=='pitcher_pitch_normal') {
                 //console.log(animation.key,frame.index);
                 state.line.x=config.width;
-                mainState.createPitch(['normal','fast','slow'][parseInt(Math.random()*3)],gameInstance);
+                mainState.createPitch(state.ballType,gameInstance);
                 state.needsRespawn = false;
                 state.pitcherSprite.play("pitcher_pitch_end");
             }
@@ -352,7 +410,7 @@ let mainState = {
         },this);
         state.ballSprite = this.add.sprite(config.width,config.height-200,'baseball').setScale(2);
         //console.log("pitching from init");
-        state.pitcherSprite.anims.play('pitcher_pitch_normal');
+        state.pitcherSprite.anims.play('pitcher_pitch_windup');
     },
     update : function(time,delta) {
         
@@ -411,7 +469,7 @@ let mainState = {
                         state.strikeText.updateText();
                         state.strikeCount = 0;
                         state.needsRespawn = true;
-                        state.pitcherSprite.play("pitcher_pitch_normal");
+                        state.pitcherSprite.play("pitcher_pitch_windup");
                     }, [], this);
                     state.hasMissed = false;
                 } 
@@ -448,7 +506,7 @@ let mainState = {
                         game.scene.start('intro');
                     }
                     state.needsRespawn = true;
-                    state.pitcherSprite.play("pitcher_pitch_normal");
+                    state.pitcherSprite.play("pitcher_pitch_windup");
                 }, [], this);
             } else {
                 state.line.x -= state.lineSpeed;
