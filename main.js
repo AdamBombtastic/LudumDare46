@@ -170,6 +170,10 @@ let mainState = {
             frameHeight: 49,
         });
         this.load.image('fg_fence',"Sprites/Dialog_foreground.png");
+
+        this.load.audio('strikeSound', 'Audio/strike.mp3');
+        this.load.audio('hitSoundCheer','Audio/hitcrowdcheer.mp3');
+        this.load.audio('hitSound','Audio/hit.mp3');
     },
     create : function() {
         let state = mainState.state;
@@ -232,7 +236,11 @@ let mainState = {
         mainState.scoreText = this.add.text(0, 0, ``, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif' });
         state.strikeText = this.add.text(30, 150, ``, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif', fontSize: 44 });
 
-        
+        //sounds
+        state.sounds = {};
+        state.sounds.strike = this.sound.add('strikeSound');
+        state.sounds.hit = this.sound.add('hitSound');
+        state.sounds.hitCheer = this.sound.add('hitSoundCheer');
 
         //player stuff
         state.playerSprite = this.add.sprite(80,config.height-200,'player').setScale(2);
@@ -455,6 +463,7 @@ let mainState = {
                     state.ballSprite.anims.play("bball_hit");
                     state.coach.anims.play('coach_whammy');
                     state.strikeText.text="WHAMMY!!";
+                    state.sounds[(state.ballType == 'fast') ? 'hitCheer' : 'hit'].play();
                     state.strikeText.updateText();
                     let impact = this.add.sprite(state.ballSprite.x,state.ballSprite.y,'impact').setScale(2);
                     impact.anims.load("impact");
@@ -477,24 +486,27 @@ let mainState = {
             //if the ball has been hit
             if (state.hitBall) {
             //I've hit the ball and it hasn't respawned yet.
-            /*let impact = this.add.sprite(state.ballSprite.x,state.ballSprite.y,'baseball').setScale(2);
-            impact.anims.load("bball_flash");
-            impact.anims.play("bball_flash");
-            impact.on("animationcomplete",function(animation,frame) {
-                //console.log("animation-complete",animation);
-                if (animation.key == 'bball_flash') {
-                    impact.destroy();
+            
+                if (state.ballType == 'fast') {
+                    let impact = this.add.sprite(state.ballSprite.x,state.ballSprite.y,'impact').setScale(1);
+                    impact.anims.load("impact");
+                    impact.anims.play("impact");
+                    impact.on("animationcomplete",function(animation,frame) {
+                        //console.log("animation-complete",animation);
+                        if (animation.key == 'impact') {
+                            impact.destroy();
+                        }
+                    },this);
                 }
-            },this);*/
-
             //have it fly off screen
-            state.line.x+=25;
+            state.line.x+= state.hitBall == 'fast' ? 30 : 25;
             state.ballSprite.x = state.line.x;
-            state.ballSprite.y -= 15;
+            state.ballSprite.y -= state.hitBall == 'fast' ? 28: 15;
             } else if (state.line.x < 0 && !state.hasMissed) {
                 state.hasMissed = true;
                 state.strikeText.text="STRIKE!!";
                 state.coach.anims.play('coach_strike');
+                state.sounds.strike.play();
                 state.strikeText.updateText();
                 state.strikeCount +=1;
                 this.time.delayedCall(750, function() {
