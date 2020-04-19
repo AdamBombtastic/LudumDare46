@@ -1,0 +1,84 @@
+{ "frames": {
+   "Pitcher 0.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 42, "h": 47 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 47 },
+    "sourceSize": { "w": 42, "h": 47 },
+    "duration": 100
+   },
+   "Pitcher 1.aseprite": {
+    "frame": { "x": 42, "y": 0, "w": 42, "h": 47 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 47 },
+    "sourceSize": { "w": 42, "h": 47 },
+    "duration": 100
+   },
+   "Pitcher 2.aseprite": {
+    "frame": { "x": 84, "y": 0, "w": 42, "h": 47 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 47 },
+    "sourceSize": { "w": 42, "h": 47 },
+    "duration": 100
+   },
+   "Pitcher 3.aseprite": {
+    "frame": { "x": 126, "y": 0, "w": 42, "h": 47 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 47 },
+    "sourceSize": { "w": 42, "h": 47 },
+    "duration": 100
+   },
+   "Pitcher 4.aseprite": {
+    "frame": { "x": 168, "y": 0, "w": 42, "h": 47 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 47 },
+    "sourceSize": { "w": 42, "h": 47 },
+    "duration": 100
+   },
+   "Pitcher 5.aseprite": {
+    "frame": { "x": 210, "y": 0, "w": 42, "h": 47 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 47 },
+    "sourceSize": { "w": 42, "h": 47 },
+    "duration": 100
+   },
+   "Pitcher 6.aseprite": {
+    "frame": { "x": 252, "y": 0, "w": 42, "h": 47 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 47 },
+    "sourceSize": { "w": 42, "h": 47 },
+    "duration": 100
+   },
+   "Pitcher 7.aseprite": {
+    "frame": { "x": 294, "y": 0, "w": 42, "h": 47 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 47 },
+    "sourceSize": { "w": 42, "h": 47 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.8",
+  "image": "C:\\Users\\gadge_000\\Desktop\\LudumDare46\\Aseprite Files\\Pitcher.png",
+  "format": "RGBA8888",
+  "size": { "w": 336, "h": 47 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "Swing", "from": 0, "to": 5, "direction": "forward" },
+   { "name": "Baseball", "from": 0, "to": 3, "direction": "forward" }
+  ],
+  "layers": [
+   { "name": "Pitcher", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}

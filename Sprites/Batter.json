@@ -1,42 +1,42 @@
 { "frames": {
    "Batter 0.aseprite": {
-    "frame": { "x": 0, "y": 0, "w": 62, "h": 62 },
+    "frame": { "x": 0, "y": 0, "w": 65, "h": 65 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 62, "h": 62 },
-    "sourceSize": { "w": 62, "h": 62 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 65, "h": 65 },
+    "sourceSize": { "w": 65, "h": 65 },
     "duration": 100
    },
    "Batter 1.aseprite": {
-    "frame": { "x": 62, "y": 0, "w": 62, "h": 62 },
+    "frame": { "x": 65, "y": 0, "w": 65, "h": 65 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 62, "h": 62 },
-    "sourceSize": { "w": 62, "h": 62 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 65, "h": 65 },
+    "sourceSize": { "w": 65, "h": 65 },
     "duration": 100
    },
    "Batter 2.aseprite": {
-    "frame": { "x": 124, "y": 0, "w": 62, "h": 62 },
+    "frame": { "x": 130, "y": 0, "w": 65, "h": 65 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 62, "h": 62 },
-    "sourceSize": { "w": 62, "h": 62 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 65, "h": 65 },
+    "sourceSize": { "w": 65, "h": 65 },
     "duration": 100
    },
    "Batter 3.aseprite": {
-    "frame": { "x": 186, "y": 0, "w": 62, "h": 62 },
+    "frame": { "x": 195, "y": 0, "w": 65, "h": 65 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 62, "h": 62 },
-    "sourceSize": { "w": 62, "h": 62 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 65, "h": 65 },
+    "sourceSize": { "w": 65, "h": 65 },
     "duration": 100
    },
    "Batter 4.aseprite": {
-    "frame": { "x": 248, "y": 0, "w": 62, "h": 62 },
+    "frame": { "x": 260, "y": 0, "w": 65, "h": 65 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 62, "h": 62 },
-    "sourceSize": { "w": 62, "h": 62 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 65, "h": 65 },
+    "sourceSize": { "w": 65, "h": 65 },
     "duration": 100
    }
  },
@@ -45,14 +45,13 @@
   "version": "1.2.8",
   "image": "C:\\Users\\gadge_000\\Desktop\\LudumDare46\\Aseprite Files\\Batter.png",
   "format": "RGBA8888",
-  "size": { "w": 310, "h": 62 },
+  "size": { "w": 325, "h": 65 },
   "scale": "1",
   "frameTags": [
    { "name": "Swing", "from": 0, "to": 5, "direction": "forward" }
   ],
   "layers": [
-   { "name": "Bat", "opacity": 255, "blendMode": "normal" },
-   { "name": "Boy", "opacity": 255, "blendMode": "normal" }
+   { "name": "Bat", "opacity": 255, "blendMode": "normal" }
   ],
   "slices": [
   ]
