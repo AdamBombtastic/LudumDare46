@@ -77,6 +77,7 @@ function createMainState() {
         keySpace : null,
         hasSwung : false,
         hitBall : false,
+        hasMissed: false,
         swingTime : 500, //ms
         homeRuns : 0,
         playerSprite : null,
@@ -101,20 +102,22 @@ let mainState = {
         keySpace : null,
         hasSwung : false,
         hitBall : false,
+        hasMissed : false,
         swingTime : 500, //ms
         homeRuns : 0,
         playerSprite : null,
+        pitcherSprite: null,
         swingAnim : null,
         ballAnims : {'fast': null, 'normal' : null, 'slow':null, 'hit':null},
         ballSprite : null,
-        needsRespawn : false,
+        needsRespawn : true,
         impactAnim : null,
         strikeText : null,
         strikeCount : 0,
 
     },
     createPitch(type,game) {
-        //console.log(game);
+        console.log("creating pitch:",type);
         let state = mainState.state;
         if (state.ballSprite != null) {
             state.ballSprite.destroy();
@@ -139,11 +142,12 @@ let mainState = {
         state.ballSprite = bball;
         state.hasSwung = false;
         state.hitBall = false;
+        state.hasMissed = false;
     },
     preload : function() {
         this.load.spritesheet('player','Sprites/Batter.png',{
-            frameWidth: 62,
-            frameHeight: 62,
+            frameWidth: 65,
+            frameHeight: 65,
         });
 
         this.load.spritesheet('baseball','Sprites/Baseball.png',{
@@ -153,6 +157,10 @@ let mainState = {
         this.load.spritesheet('impact','Sprites/Impact.png',{
             frameWidth: 28,
             frameHeight: 29,
+        });
+        this.load.spritesheet('pitcher','Sprites/Pitcher.png',{
+            frameWidth:42,
+            frameHeight:47,
         });
     },
     create : function() {
@@ -168,7 +176,7 @@ let mainState = {
                 width: 4,
             }
         });
-        state.targetRect = new Phaser.Geom.Rectangle(70,config.height-100,50,30);
+        state.targetRect = new Phaser.Geom.Rectangle(70,config.height-100,70,30);
         state.line = new Phaser.Geom.Rectangle(state.lineX-2,0,2,config.height);
     
         state.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -229,19 +237,76 @@ let mainState = {
             yoyo: false,
             repeat: -1,
         });
+        state.ballAnims.flash = this.anims.create({
+            key: 'bball_flash',
+            frames: [{key:'baseball',frame:12},{key:'baseball',frame:13}],
+            frameRate: 18,
+            yoyo: false,
+            repeat: 1,
+        });
+        let pitchFrames = this.anims.generateFrameNumbers('pitcher');
+        let normalFrames = pitchFrames.slice(0,pitchFrames.length-1);
+        let endFrame = [pitchFrames[pitchFrames.length-1]];
+        this.anims.create({
+           key: 'pitcher_pitch_normal',
+           frames: pitchFrames.slice(0,pitchFrames.length-1),
+           frameRate:6,
+           yoyo: false,
+           repeat: 0, 
+        });
+        this.anims.create({
+            key: 'pitcher_pitch_end',
+            frames: [pitchFrames[pitchFrames.length-1]],
+            frameRate:12,
+            yoyo: false,
+            repeat: 0,
+        });
+        this.anims.create({
+            key: 'pitcher_idle',
+            frames: [{key:'pitcher',frame:0}],
+            frameRate: 18,
+            yoyo: false,
+            repeat: -1,
+        });
+        
+        //pitcher
+        state.pitcherSprite = this.add.sprite(config.width-20,config.height-200,'pitcher').setScale(2);
+
+        state.pitcherSprite.anims.load('pitcher_idle');
+        state.pitcherSprite.anims.load('pitcher_pitch_normal');
+        state.pitcherSprite.anims.load('pitcher_pitch_end');
+        state.pitcherSprite.anims.play('pitcher_idle');
+        const gameInstance = this;
+        state.pitcherSprite.on("animationcomplete",function(animation,frame){
+            console.log(animation.key," ending");
+            if (animation.key=='pitcher_pitch_normal') {
+                //console.log(animation.key,frame.index);
+                state.line.x=config.width;
+                mainState.createPitch(['normal','fast','slow'][parseInt(Math.random()*3)],gameInstance);
+                state.needsRespawn = false;
+                state.pitcherSprite.play("pitcher_pitch_end");
+            }
+            else if (animation.key == 'pitcher_pitch_end') {
+                //console.log(animation.key,frame.index);
+                state.pitcherSprite.play("pitcher_idle");
+            }
+        });
 
         state.playerSprite.anims.load('swing');
         state.playerSprite.anims.load('idle');
         state.playerSprite.on("animationcomplete",function(animation,frame) {
-            console.log("animation-complete",animation);
             if (animation.key == 'swing') {
                 state.playerSprite.anims.play('idle');
             }
         },this);
-        console.log('Swing Anim Frames:',this.anims.generateFrameNumbers('player'));
-        mainState.createPitch('normal',this);
+        state.ballSprite = this.add.sprite(config.width,config.height-200,'baseball').setScale(2);
+        //console.log("pitching from init");
+        state.pitcherSprite.anims.play('pitcher_pitch_normal');
     },
-    update : function() {
+    update : function(time,delta) {
+        
+
+        //console.log("delta_time:",delta);
         let state = mainState.state;
         let graphics = state.graphics;
         graphics.clear();
@@ -252,80 +317,77 @@ let mainState = {
         graphics.fillStyle(0xFFFFFF,1);
         graphics.fillRectShape(state.line);
 
-        if (state.keySpace.isDown && !state.hasSwung) {
-            state.playerSprite.anims.play('swing');
-            state.hasSwung = true;
-            state.hitBall = Phaser.Geom.Intersects.RectangleToRectangle(state.targetRect,state.line);
-            if (state.hitBall) {
-                state.homeRuns += 1;
+        
+        //if the pitcher isn't pitching
+        if (!state.needsRespawn) {
+            //check if the player has swung
+            if (state.keySpace.isDown && !state.hasSwung) {
+                state.playerSprite.anims.play('swing');
+                state.hasSwung = true;
+                state.hitBall = Phaser.Geom.Intersects.RectangleToRectangle(state.targetRect,state.line);
+                //if I hit
+                if (state.hitBall) {
+                    state.homeRuns += 1;
+                    state.ballSprite.anims.load("bball_hit");
+                    state.ballSprite.anims.play("bball_hit");
+                    state.strikeText.text="WHAMMY!!";
+                    state.strikeText.updateText();
+                    let impact = this.add.sprite(state.ballSprite.x,state.ballSprite.y,'impact').setScale(2);
+                    impact.anims.load("impact");
+                    impact.anims.play("impact");
+                    impact.on("animationcomplete",function(animation,frame) {
+                        if (animation.key == 'impact') {
+                            impact.destroy();
+                        }
+                    },this);
+                    this.time.delayedCall(1000, function() {
+                        state.strikeText.text="";
+                        state.strikeText.updateText();
+                        state.strikeCount = 0;
+                        state.needsRespawn = true;
+                        state.pitcherSprite.play("pitcher_pitch_normal");
+                    }, [], this);
+                    state.hasMissed = false;
+                } 
             }
-        }
-
-        if (state.line.x < 0 && !state.needsRespawn) {
-            state.needsRespawn = true;
-            state.strikeText.text="STRIKE!!";
-            state.strikeText.updateText();
-            state.strikeCount +=1;
-            this.time.delayedCall(750, function() {
-                console.log("missed the ball -- creating pitch");
-                state.strikeText.text="";
-                state.strikeText.updateText();
-                state.line.x = config.width;
-                if (state.strikeCount >= 3) {
-                    game.scene.stop("mainState")
-                    game.scene.start('intro');
-                    //mainState.state = createMainState();
-                }
-                mainState.createPitch(['normal','fast','slow'][parseInt(Math.random()*3)],this);
-                state.needsRespawn = false;
-            }, [], this);
-        } else if (!state.hitBall) {
-            state.line.x -= state.lineSpeed;
-            state.ballSprite.x = state.line.x;
-        } else {
-            state.ballSprite.anims.load("bball_hit");
-            state.ballSprite.anims.play("bball_hit");
-            
-            
-            /* Uncomment for fun
-            let impact = this.add.sprite(state.ballSprite.x,state.ballSprite.y,'impact').setScale(2);
-            impact.anims.load("impact");
-            impact.anims.play("impact");
+            //if the ball has been hit
+            if (state.hitBall) {
+            //I've hit the ball and it hasn't respawned yet.
+            /*let impact = this.add.sprite(state.ballSprite.x,state.ballSprite.y,'baseball').setScale(2);
+            impact.anims.load("bball_flash");
+            impact.anims.play("bball_flash");
             impact.on("animationcomplete",function(animation,frame) {
                 //console.log("animation-complete",animation);
-                if (animation.key == 'impact') {
+                if (animation.key == 'bball_flash') {
                     impact.destroy();
                 }
-            },this);
-            */
+            },this);*/
 
+            //have it fly off screen
             state.line.x+=25;
             state.ballSprite.x = state.line.x;
             state.ballSprite.y -= 15;
-            if (!state.needsRespawn) {
-                state.needsRespawn = true;
-                let impact = this.add.sprite(state.ballSprite.x,state.ballSprite.y,'impact').setScale(2);
-                impact.anims.load("impact");
-                impact.anims.play("impact");
-                state.strikeText.text="WHAMMY!!";
+            } else if (state.line.x < 0 && !state.hasMissed) {
+                state.hasMissed = true;
+                state.strikeText.text="STRIKE!!";
                 state.strikeText.updateText();
-                impact.on("animationcomplete",function(animation,frame) {
-                    //console.log("animation-complete",animation);
-                    if (animation.key == 'impact') {
-                        impact.destroy();
-                    }
-                },this);
-                this.time.delayedCall(1000, function() {
-                    console.log("hit the ball created pitch");
+                state.strikeCount +=1;
+                this.time.delayedCall(750, function() {
                     state.strikeText.text="";
                     state.strikeText.updateText();
-                    state.strikeCount = 0;
-                    mainState.createPitch(['normal','fast','slow'][parseInt(Math.random()*3)],this);
-                    state.needsRespawn = false;
+                    state.line.x = config.width;
+                    if (state.strikeCount >= 2000) {
+                        game.scene.stop("mainState")
+                        game.scene.start('intro');
+                    }
+                    state.needsRespawn = true;
+                    state.pitcherSprite.play("pitcher_pitch_normal");
                 }, [], this);
-            }
-        }
-
+            } else {
+                state.line.x -= state.lineSpeed;
+                state.ballSprite.x = state.line.x;
+            }    
+        } 
         mainState.scoreText.x = config.width-(mainState.scoreText.width+30);
         mainState.scoreText.y = 60;
         mainState.scoreText.text = `${state.homeRuns} whammies!`;
@@ -333,8 +395,6 @@ let mainState = {
     }
 }
 //endregion
-
-
 
 //region Entrypoint
 var game = new Phaser.Game(config);
