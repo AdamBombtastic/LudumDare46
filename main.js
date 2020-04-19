@@ -10,16 +10,7 @@ var config = {
 let teamName = "<INSERT_NAME_HERE>";
 let badTeamName = "Back City Bad Boyz"
 let coachName = "<COACH_NAME>"
-/*let textArray = [
-    `It is the worst day of your middle school career . . .`,
-    `It's bottom of the 9th and your baseball team, ${teamName}, 
-     is in the championship 
-     game against the ${badTeamName}!`,
-    `${coachName} has been dreaming of this moment 
-     his entire life, but the dream is almost dead. 
-     You're down 20 points.`,
-    `Keep the dream alive and hit some home runs!!!`,
-];*/
+
 let textArray = [
     `The year was 1977 . . .`,
     `I was in the 8th grade and having the little league season of my life.`,
@@ -132,6 +123,10 @@ let introState = {
         introState.introText = this.add.text(0, 0, '', 
         { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif',align: "left", fixedWidth: 500,
             wordWrap: { width: 450, useAdvancedWrap: true } });
+        introState.escText = this.add.text(10, config.height-20, 'ESC TO SKIP', 
+        { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif',fontSize:12,align: "left"});
+        introState.escText = this.add.text(20, 135, 'PRESS SPACE', 
+        { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif',fontSize:16,align: "left"});
     },
     update : function(time,delta) {
         introState.textTicker += delta;
