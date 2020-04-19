@@ -339,6 +339,7 @@ let mainState = {
             else if (animation.key == 'pitcher_pitch_end') {
                 //console.log(animation.key,frame.index);
                 state.pitcherSprite.play("pitcher_idle");
+                state.coach.anims.play('coach_idle');
             }
         });
 
@@ -394,6 +395,7 @@ let mainState = {
                     state.homeRuns += 1;
                     state.ballSprite.anims.load("bball_hit");
                     state.ballSprite.anims.play("bball_hit");
+                    state.coach.anims.play('coach_whammy');
                     state.strikeText.text="WHAMMY!!";
                     state.strikeText.updateText();
                     let impact = this.add.sprite(state.ballSprite.x,state.ballSprite.y,'impact').setScale(2);
@@ -434,6 +436,7 @@ let mainState = {
             } else if (state.line.x < 0 && !state.hasMissed) {
                 state.hasMissed = true;
                 state.strikeText.text="STRIKE!!";
+                state.coach.anims.play('coach_strike');
                 state.strikeText.updateText();
                 state.strikeCount +=1;
                 this.time.delayedCall(750, function() {
