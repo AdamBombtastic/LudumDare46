@@ -1,42 +1,10 @@
 { "frames": {
-   "Batter 0.aseprite": {
-    "frame": { "x": 0, "y": 0, "w": 65, "h": 65 },
+   "Batter.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 64, "h": 64 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 65, "h": 65 },
-    "sourceSize": { "w": 65, "h": 65 },
-    "duration": 100
-   },
-   "Batter 1.aseprite": {
-    "frame": { "x": 65, "y": 0, "w": 65, "h": 65 },
-    "rotated": false,
-    "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 65, "h": 65 },
-    "sourceSize": { "w": 65, "h": 65 },
-    "duration": 100
-   },
-   "Batter 2.aseprite": {
-    "frame": { "x": 130, "y": 0, "w": 65, "h": 65 },
-    "rotated": false,
-    "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 65, "h": 65 },
-    "sourceSize": { "w": 65, "h": 65 },
-    "duration": 100
-   },
-   "Batter 3.aseprite": {
-    "frame": { "x": 195, "y": 0, "w": 65, "h": 65 },
-    "rotated": false,
-    "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 65, "h": 65 },
-    "sourceSize": { "w": 65, "h": 65 },
-    "duration": 100
-   },
-   "Batter 4.aseprite": {
-    "frame": { "x": 260, "y": 0, "w": 65, "h": 65 },
-    "rotated": false,
-    "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 65, "h": 65 },
-    "sourceSize": { "w": 65, "h": 65 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
+    "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
    }
  },
@@ -45,7 +13,7 @@
   "version": "1.2.8",
   "image": "C:\\Users\\gadge_000\\Desktop\\LudumDare46\\Aseprite Files\\Batter.png",
   "format": "RGBA8888",
-  "size": { "w": 325, "h": 65 },
+  "size": { "w": 64, "h": 64 },
   "scale": "1",
   "frameTags": [
    { "name": "Swing", "from": 0, "to": 5, "direction": "forward" }

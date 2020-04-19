@@ -149,8 +149,8 @@ let mainState = {
     },
     preload : function() {
         this.load.spritesheet('player','Sprites/Batter.png',{
-            frameWidth: 65,
-            frameHeight: 65,
+            frameWidth: 64,
+            frameHeight: 64,
         });
 
         this.load.spritesheet('baseball','Sprites/Baseball.png',{
