@@ -1,66 +1,66 @@
 { "frames": {
    "Pitcher 0.aseprite": {
-    "frame": { "x": 0, "y": 0, "w": 42, "h": 47 },
+    "frame": { "x": 0, "y": 0, "w": 84, "h": 94 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 47 },
-    "sourceSize": { "w": 42, "h": 47 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 84, "h": 94 },
+    "sourceSize": { "w": 84, "h": 94 },
     "duration": 100
    },
    "Pitcher 1.aseprite": {
-    "frame": { "x": 42, "y": 0, "w": 42, "h": 47 },
+    "frame": { "x": 84, "y": 0, "w": 84, "h": 94 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 47 },
-    "sourceSize": { "w": 42, "h": 47 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 84, "h": 94 },
+    "sourceSize": { "w": 84, "h": 94 },
     "duration": 100
    },
    "Pitcher 2.aseprite": {
-    "frame": { "x": 84, "y": 0, "w": 42, "h": 47 },
+    "frame": { "x": 168, "y": 0, "w": 84, "h": 94 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 47 },
-    "sourceSize": { "w": 42, "h": 47 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 84, "h": 94 },
+    "sourceSize": { "w": 84, "h": 94 },
     "duration": 100
    },
    "Pitcher 3.aseprite": {
-    "frame": { "x": 126, "y": 0, "w": 42, "h": 47 },
+    "frame": { "x": 252, "y": 0, "w": 84, "h": 94 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 47 },
-    "sourceSize": { "w": 42, "h": 47 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 84, "h": 94 },
+    "sourceSize": { "w": 84, "h": 94 },
     "duration": 100
    },
    "Pitcher 4.aseprite": {
-    "frame": { "x": 168, "y": 0, "w": 42, "h": 47 },
+    "frame": { "x": 336, "y": 0, "w": 84, "h": 94 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 47 },
-    "sourceSize": { "w": 42, "h": 47 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 84, "h": 94 },
+    "sourceSize": { "w": 84, "h": 94 },
     "duration": 100
    },
    "Pitcher 5.aseprite": {
-    "frame": { "x": 210, "y": 0, "w": 42, "h": 47 },
+    "frame": { "x": 420, "y": 0, "w": 84, "h": 94 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 47 },
-    "sourceSize": { "w": 42, "h": 47 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 84, "h": 94 },
+    "sourceSize": { "w": 84, "h": 94 },
     "duration": 100
    },
    "Pitcher 6.aseprite": {
-    "frame": { "x": 252, "y": 0, "w": 42, "h": 47 },
+    "frame": { "x": 504, "y": 0, "w": 84, "h": 94 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 47 },
-    "sourceSize": { "w": 42, "h": 47 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 84, "h": 94 },
+    "sourceSize": { "w": 84, "h": 94 },
     "duration": 100
    },
    "Pitcher 7.aseprite": {
-    "frame": { "x": 294, "y": 0, "w": 42, "h": 47 },
+    "frame": { "x": 588, "y": 0, "w": 84, "h": 94 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 42, "h": 47 },
-    "sourceSize": { "w": 42, "h": 47 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 84, "h": 94 },
+    "sourceSize": { "w": 84, "h": 94 },
     "duration": 100
    }
  },
@@ -69,7 +69,7 @@
   "version": "1.2.8",
   "image": "C:\\Users\\gadge_000\\Desktop\\LudumDare46\\Aseprite Files\\Pitcher.png",
   "format": "RGBA8888",
-  "size": { "w": 336, "h": 47 },
+  "size": { "w": 672, "h": 94 },
   "scale": "1",
   "frameTags": [
    { "name": "Swing", "from": 0, "to": 5, "direction": "forward" },

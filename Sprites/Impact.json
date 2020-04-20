@@ -1,34 +1,34 @@
 { "frames": {
    "Impact 0.aseprite": {
-    "frame": { "x": 0, "y": 0, "w": 28, "h": 29 },
+    "frame": { "x": 0, "y": 0, "w": 56, "h": 58 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 28, "h": 29 },
-    "sourceSize": { "w": 28, "h": 29 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 56, "h": 58 },
+    "sourceSize": { "w": 56, "h": 58 },
     "duration": 100
    },
    "Impact 1.aseprite": {
-    "frame": { "x": 28, "y": 0, "w": 28, "h": 29 },
+    "frame": { "x": 56, "y": 0, "w": 56, "h": 58 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 28, "h": 29 },
-    "sourceSize": { "w": 28, "h": 29 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 56, "h": 58 },
+    "sourceSize": { "w": 56, "h": 58 },
     "duration": 100
    },
    "Impact 2.aseprite": {
-    "frame": { "x": 56, "y": 0, "w": 28, "h": 29 },
+    "frame": { "x": 112, "y": 0, "w": 56, "h": 58 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 28, "h": 29 },
-    "sourceSize": { "w": 28, "h": 29 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 56, "h": 58 },
+    "sourceSize": { "w": 56, "h": 58 },
     "duration": 100
    },
    "Impact 3.aseprite": {
-    "frame": { "x": 84, "y": 0, "w": 28, "h": 29 },
+    "frame": { "x": 168, "y": 0, "w": 56, "h": 58 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 28, "h": 29 },
-    "sourceSize": { "w": 28, "h": 29 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 56, "h": 58 },
+    "sourceSize": { "w": 56, "h": 58 },
     "duration": 100
    }
  },
@@ -37,7 +37,7 @@
   "version": "1.2.8",
   "image": "C:\\Users\\gadge_000\\Desktop\\LudumDare46\\Aseprite Files\\Impact.png",
   "format": "RGBA8888",
-  "size": { "w": 112, "h": 29 },
+  "size": { "w": 224, "h": 58 },
   "scale": "1",
   "frameTags": [
   ],

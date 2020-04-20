@@ -1,18 +1,18 @@
 { "frames": {
    "!!! 0.aseprite": {
-    "frame": { "x": 0, "y": 0, "w": 7, "h": 24 },
+    "frame": { "x": 0, "y": 0, "w": 14, "h": 48 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 7, "h": 24 },
-    "sourceSize": { "w": 7, "h": 24 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 14, "h": 48 },
+    "sourceSize": { "w": 14, "h": 48 },
     "duration": 100
    },
    "!!! 1.aseprite": {
-    "frame": { "x": 7, "y": 0, "w": 7, "h": 24 },
+    "frame": { "x": 14, "y": 0, "w": 14, "h": 48 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 7, "h": 24 },
-    "sourceSize": { "w": 7, "h": 24 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 14, "h": 48 },
+    "sourceSize": { "w": 14, "h": 48 },
     "duration": 100
    }
  },
@@ -21,7 +21,7 @@
   "version": "1.2.8",
   "image": "C:\\Users\\gadge_000\\Desktop\\LudumDare46\\Aseprite Files\\!!!.png",
   "format": "RGBA8888",
-  "size": { "w": 14, "h": 24 },
+  "size": { "w": 28, "h": 48 },
   "scale": "1",
   "frameTags": [
   ],

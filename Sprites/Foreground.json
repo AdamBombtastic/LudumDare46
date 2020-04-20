@@ -1,10 +1,10 @@
 { "frames": {
    "Foreground.aseprite": {
-    "frame": { "x": 0, "y": 0, "w": 320, "h": 240 },
+    "frame": { "x": 0, "y": 0, "w": 640, "h": 480 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 320, "h": 240 },
-    "sourceSize": { "w": 320, "h": 240 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 640, "h": 480 },
+    "sourceSize": { "w": 640, "h": 480 },
     "duration": 100
    }
  },
@@ -13,7 +13,7 @@
   "version": "1.2.8",
   "image": "C:\\Users\\gadge_000\\Desktop\\LudumDare46\\Aseprite Files\\Foreground.png",
   "format": "RGBA8888",
-  "size": { "w": 320, "h": 240 },
+  "size": { "w": 640, "h": 480 },
   "scale": "1",
   "frameTags": [
   ],

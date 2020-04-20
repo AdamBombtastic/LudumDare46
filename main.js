@@ -41,20 +41,20 @@ let introState = {
     },
     preload : function() {
         this.load.spritesheet('coach','Sprites/Coach.png',{
-            frameWidth: 51,
-            frameHeight: 49,
+            frameWidth: 102,
+            frameHeight: 98,
         });
         this.load.spritesheet('coachBatter','Sprites/Batter_coach.png',{
-            frameWidth: 64,
-            frameHeight: 64,
+            frameWidth: 128,
+            frameHeight: 128,
         });
         this.load.spritesheet('pitcher','Sprites/Pitcher.png',{
-            frameWidth:42,
-            frameHeight:47,
+            frameWidth:84,
+            frameHeight:94,
         });
         this.load.spritesheet('baseball','Sprites/Baseball.png',{
-            frameWidth: 40,
-            frameHeight: 40,
+            frameWidth: 80,
+            frameHeight: 80,
         });
         //this.load.audio('hitSoundCheer','Audio/hitcrowdcheer.mp3');
         
@@ -65,10 +65,10 @@ let introState = {
         introState.selectedIndex = 0;
         introState.textIndex = 0;
 
-        introState.coachSprite = this.add.sprite(80,80,'coach').setScale(2);
-        introState.coachBatterSprite = this.add.sprite(80,config.height-200,'coachBatter').setScale(2);
+        introState.coachSprite = this.add.sprite(80,80,'coach').setScale(1);
+        introState.coachBatterSprite = this.add.sprite(80,config.height-200,'coachBatter').setScale(1);
         introState.coachBatterSprite.alpha = 0;
-        introState.pitcherSprite = this.add.sprite(config.width-20,config.height-185,'pitcher').setScale(2);
+        introState.pitcherSprite = this.add.sprite(config.width-20,config.height-185,'pitcher').setScale(1);
         introState.pitcherSprite.alpha = 0;
         this.anims.create({
             key: 'coach_talk',
@@ -246,7 +246,7 @@ let mainState = {
         if (state.ballSprite != null) {
             state.ballSprite.destroy();
         }
-        let bball = game.add.sprite(config.width,config.height-145,'baseball').setScale(2);
+        let bball = game.add.sprite(config.width,config.height-145,'baseball').setScale(1);
         switch (type) {
             case 'heat':
                 bball.anims.load('bball_heat');
@@ -275,29 +275,29 @@ let mainState = {
     },
     preload : function() {
         this.load.spritesheet('player','Sprites/Batter.png',{
-            frameWidth: 64,
-            frameHeight: 64,
+            frameWidth: 128,
+            frameHeight: 128,
         });
 
         this.load.spritesheet('baseball','Sprites/Baseball.png',{
-            frameWidth: 40,
-            frameHeight: 40,
+            frameWidth: 80,
+            frameHeight: 80,
         });
         this.load.spritesheet('impact','Sprites/Impact.png',{
-            frameWidth: 28,
-            frameHeight: 29,
+            frameWidth: 56,
+            frameHeight: 58,
         });
         this.load.spritesheet('pitcher','Sprites/Pitcher.png',{
-            frameWidth:42,
-            frameHeight:47,
+            frameWidth:84,
+            frameHeight:94,
         });
         this.load.spritesheet('coach','Sprites/Coach.png',{
-            frameWidth: 51,
-            frameHeight: 49,
+            frameWidth: 102,
+            frameHeight: 98,
         });
         this.load.spritesheet('!!!','Sprites/!!!.png',{
-            frameWidth: 7,
-            frameHeight: 24,
+            frameWidth: 14,
+            frameHeight: 48,
         });
         this.load.image('fg_fence',"Sprites/Foreground.png");
         this.load.image("bg_field","Sprites/Background.png");
@@ -311,8 +311,8 @@ let mainState = {
         let state = mainState.state;
         this.cameras.main.backgroundColor = Phaser.Display.Color.HexStringToColor("#D97031");
 
-        this.add.sprite(0,0,"bg_field").setScale(2).setOrigin(0,0);
-        this.add.sprite(0,0,"fg_crowd").setScale(2).setOrigin(0,0);
+        this.add.sprite(0,0,"bg_field").setScale(1).setOrigin(0,0);
+        this.add.sprite(0,0,"fg_crowd").setScale(1).setOrigin(0,0);
         //background & coach stuff
         this.anims.create({
             key: 'coach_idle',
@@ -344,8 +344,8 @@ let mainState = {
             yoyo: false,
             repeat: -1,
         });
-        state.coach = this.add.sprite(280,config.height-145,'coach').setScale(2);
-        state.fg = this.add.sprite(0,0,'fg_fence').setScale(2).setOrigin(0,0);
+        state.coach = this.add.sprite(280,config.height-145,'coach').setScale(1);
+        state.fg = this.add.sprite(0,0,'fg_fence').setScale(1).setOrigin(0,0);
 
         state.coach.anims.load('coach_idle');
         state.coach.anims.load('coach_strike');
@@ -377,8 +377,8 @@ let mainState = {
         state.sounds.hitCheer = this.sound.add('hitSoundCheer');
 
         //player stuff
-        state.playerSprite = this.add.sprite(80,config.height-160,'player').setScale(2);
-        state.hitIndicator = this.add.sprite(state.playerSprite.x,state.playerSprite.y-60,'!!!').setScale(2);
+        state.playerSprite = this.add.sprite(80,config.height-160,'player').setScale(1);
+        state.hitIndicator = this.add.sprite(state.playerSprite.x,state.playerSprite.y-60,'!!!').setScale(1);
         this.anims.create({
             key: '!!!',
             frames: this.anims.generateFrameNumbers('!!!'),
@@ -547,7 +547,7 @@ let mainState = {
      
         
         //pitcher
-        state.pitcherSprite = this.add.sprite(config.width-60,config.height-145,'pitcher').setScale(2);
+        state.pitcherSprite = this.add.sprite(config.width-60,config.height-145,'pitcher').setScale(1);
 
         state.pitcherSprite.anims.load('pitcher_idle');
         state.pitcherSprite.anims.load('pitcher_pitch_normal');
@@ -593,7 +593,7 @@ let mainState = {
                 state.playerSprite.anims.play('idle');
             }
         },this);
-        state.ballSprite = this.add.sprite(config.width-60,config.height-145,'baseball').setScale(2);
+        state.ballSprite = this.add.sprite(config.width-60,config.height-145,'baseball').setScale(1);
         //console.log("pitching from init");
         state.ballSprite.alpha = 0;
         state.pitcherSprite.anims.play('pitcher_pitch_windup');
@@ -636,7 +636,7 @@ let mainState = {
                     state.strikeText.text="WHAMMY!!";
                     state.sounds[(state.ballType == 'fast' || state.ballType == 'heat') ? 'hitCheer' : 'hit'].play();
                     state.strikeText.updateText();
-                    let impact = this.add.sprite(state.ballSprite.x,state.ballSprite.y,'impact').setScale(2);
+                    let impact = this.add.sprite(state.ballSprite.x,state.ballSprite.y,'impact').setScale(1);
                     impact.anims.load("impact");
                     impact.anims.play("impact");
                     impact.on("animationcomplete",function(animation,frame) {
@@ -663,7 +663,7 @@ let mainState = {
             //I've hit the ball and it hasn't respawned yet.
             
                 if (state.ballType == 'fast' || state.ballType == 'heat') {
-                    let impact = this.add.sprite(state.ballSprite.x,state.ballSprite.y,'impact').setScale(1);
+                    let impact = this.add.sprite(state.ballSprite.x,state.ballSprite.y,'impact').setScale(.5);
                     impact.anims.load("impact");
                     impact.anims.play("impact");
                     impact.on("animationcomplete",function(animation,frame) {
