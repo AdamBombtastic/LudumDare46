@@ -132,7 +132,6 @@ let introState = {
         introState.textTicker += delta;
         if (introState.textTickerTimeMs < introState.textTicker) {
             let textSelection = "COACH: " + textArray[introState.selectedIndex].substring(0,introState.textIndex);
-            //textSelection += "\n <PRESS SPACE>";
             introState.introText.text = textSelection;
             introState.introText.updateText();
             introState.textIndex++;
@@ -239,7 +238,7 @@ let mainState = {
         if (state.ballSprite != null) {
             state.ballSprite.destroy();
         }
-        let bball = game.add.sprite(config.width,config.height-200,'baseball').setScale(2);
+        let bball = game.add.sprite(config.width,config.height-145,'baseball').setScale(2);
         bball.anims.load('bball_flash');
         switch (type) {
             case "fast":
@@ -284,8 +283,9 @@ let mainState = {
             frameWidth: 51,
             frameHeight: 49,
         });
-        this.load.image('fg_fence',"Sprites/Dialog_foreground.png");
-
+        this.load.image('fg_fence',"Sprites/Foreground.png");
+        this.load.image("bg_field","Sprites/Background.png");
+        this.load.image("fg_crowd","Sprites/Crowd.png");
         this.load.audio('strikeSound', 'Audio/strike.mp3');
         this.load.audio('hitSoundCheer','Audio/hitcrowdcheer.mp3');
         this.load.audio('hitSound','Audio/hit.mp3');
@@ -295,6 +295,8 @@ let mainState = {
         let state = mainState.state;
         this.cameras.main.backgroundColor = Phaser.Display.Color.HexStringToColor("#D97031");
 
+        this.add.sprite(0,0,"bg_field").setScale(2).setOrigin(0,0);
+        this.add.sprite(0,0,"fg_crowd").setScale(2).setOrigin(0,0);
         //background & coach stuff
         this.anims.create({
             key: 'coach_idle',
@@ -326,8 +328,8 @@ let mainState = {
             yoyo: false,
             repeat: -1,
         });
-        state.coach = this.add.sprite(280,config.height-185,'coach').setScale(2);
-        state.fg = this.add.sprite(158,284,'fg_fence').setScale(3);
+        state.coach = this.add.sprite(280,config.height-145,'coach').setScale(2);
+        state.fg = this.add.sprite(0,0,'fg_fence').setScale(2).setOrigin(0,0);
 
         state.coach.anims.load('coach_idle');
         state.coach.anims.load('coach_strike');
@@ -350,7 +352,7 @@ let mainState = {
     
         state.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         mainState.scoreText = this.add.text(0, 0, ``, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif' });
-        state.strikeText = this.add.text(30, 150, ``, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif', fontSize: 44 });
+        state.strikeText = this.add.text(30, 150, ``, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif', fontSize: 44, color: "red" });
 
         //sounds
         state.sounds = {};
@@ -359,7 +361,7 @@ let mainState = {
         state.sounds.hitCheer = this.sound.add('hitSoundCheer');
 
         //player stuff
-        state.playerSprite = this.add.sprite(80,config.height-200,'player').setScale(2);
+        state.playerSprite = this.add.sprite(80,config.height-160,'player').setScale(2);
         state.impactAnim = this.anims.create({
             key: 'impact',
             frames: this.anims.generateFrameNumbers('impact'),
@@ -491,7 +493,7 @@ let mainState = {
      
         
         //pitcher
-        state.pitcherSprite = this.add.sprite(config.width-20,config.height-185,'pitcher').setScale(2);
+        state.pitcherSprite = this.add.sprite(config.width-60,config.height-145,'pitcher').setScale(2);
 
         state.pitcherSprite.anims.load('pitcher_idle');
         state.pitcherSprite.anims.load('pitcher_pitch_normal');
@@ -513,7 +515,7 @@ let mainState = {
             }
             else if (animation.key=='pitcher_pitch_normal') {
                 //console.log(animation.key,frame.index);
-                state.line.x=config.width;
+                state.line.x=config.width-50;
                 mainState.createPitch(state.ballType,gameInstance);
                 state.needsRespawn = false;
                 state.pitcherSprite.play("pitcher_pitch_end");
@@ -532,8 +534,9 @@ let mainState = {
                 state.playerSprite.anims.play('idle');
             }
         },this);
-        state.ballSprite = this.add.sprite(config.width,config.height-200,'baseball').setScale(2);
+        state.ballSprite = this.add.sprite(config.width-60,config.height-145,'baseball').setScale(2);
         //console.log("pitching from init");
+        state.ballSprite.alpha = 0;
         state.pitcherSprite.anims.play('pitcher_pitch_windup');
     },
     update : function(time,delta) {
