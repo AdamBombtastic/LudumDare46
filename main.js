@@ -60,6 +60,11 @@ let introState = {
         
     },
     create : function() {
+        introState.hasProgressed = true;
+        introState.skipped = false;
+        introState.selectedIndex = 0;
+        introState.textIndex = 0;
+
         introState.coachSprite = this.add.sprite(80,80,'coach').setScale(2);
         introState.coachBatterSprite = this.add.sprite(80,config.height-200,'coachBatter').setScale(2);
         introState.coachBatterSprite.alpha = 0;
@@ -156,6 +161,9 @@ let introState = {
         if (introState.keyEsc.isDown && !introState.skipped ) {
             introState.toMain();
             introState.skipped = true;
+
+            introState.selectedIndex = 0;
+            introState.textIndex = 0;
         }
 
         if (introState.selectedIndex == 2) {
@@ -240,6 +248,11 @@ let mainState = {
         }
         let bball = game.add.sprite(config.width,config.height-145,'baseball').setScale(2);
         switch (type) {
+            case 'heat':
+                bball.anims.load('bball_heat');
+                bball.anims.play('bball_heat');
+                state.lineSpeed = 32;
+                break;
             case "fast":
                 bball.anims.load('bball_fast');
                 bball.anims.play('bball_fast');
@@ -350,7 +363,7 @@ let mainState = {
                 width: 4,
             }
         });
-        state.targetRect = new Phaser.Geom.Rectangle(65,config.height-100,80,30);
+        state.targetRect = new Phaser.Geom.Rectangle(50,config.height-100,80,30);
         state.line = new Phaser.Geom.Rectangle(state.lineX-2,0,2,config.height);
     
         state.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -406,6 +419,14 @@ let mainState = {
             yoyo: false,
             repeat: -1,
         });
+        state.ballAnims.fast = this.anims.create({
+            key: 'bball_heat',
+            frames: [{key:'baseball',frame:12},{key:'baseball',frame:13},
+                     {key:'baseball',frame:14},{key:'baseball',frame: 15}],
+            frameRate: 12,
+            yoyo: false,
+            repeat: -1,
+        });
         state.ballAnims.slow = this.anims.create({
             key: 'bball_slow',
             frames: [{key:'baseball',frame:4},{key:'baseball',frame:5},
@@ -449,7 +470,7 @@ let mainState = {
                 {key:'pitcher',frame:3},
                 {key:'pitcher',frame:2},
             ],
-            frameRate: 2,
+            frameRate: 1,
             yoyo: false,
             repeat: 0,
         });
@@ -459,6 +480,31 @@ let mainState = {
                 {key:'pitcher',frame:4},
                 {key:'pitcher',frame:2},
                 {key:'pitcher',frame:3},
+                {key:'pitcher',frame:4},
+            ],
+            frameRate: 1,
+            yoyo: false,
+            repeat: 0,
+        });
+        this.anims.create({
+            key: 'pitcher_pitch_tell_heat',
+            frames: [
+                {key:'pitcher',frame:3},
+                {key:'pitcher',frame:3},
+                {key:'pitcher',frame:3},
+                {key:'pitcher',frame:3},
+                {key:'pitcher',frame:2},
+                {key:'pitcher',frame:2},
+                {key:'pitcher',frame:2},
+                {key:'pitcher',frame:2},
+                {key:'pitcher',frame:2},
+                {key:'pitcher',frame:2},
+                {key:'pitcher',frame:4},
+                {key:'pitcher',frame:4},
+                {key:'pitcher',frame:4},
+                {key:'pitcher',frame:4},
+                {key:'pitcher',frame:4},
+                {key:'pitcher',frame:4},
                 {key:'pitcher',frame:4},
             ],
             frameRate: 2,
@@ -473,7 +519,7 @@ let mainState = {
                 {key:'pitcher',frame:2},
                 {key:'pitcher',frame:3},
             ],
-            frameRate: 2,
+            frameRate: 1,
             yoyo: false,
             repeat: 0,
         });
@@ -515,7 +561,11 @@ let mainState = {
         state.pitcherSprite.on("animationcomplete",function(animation,frame){
             console.log(animation.key," ending");
             if (animation.key=='pitcher_pitch_windup') {
-                state.ballType = ["normal","fast","slow"][parseInt(Math.random()*3)];
+                if (state.homeRuns == 19) {
+                    state.ballType = 'heat';
+                } else {
+                    state.ballType = ["normal","fast","slow"][parseInt(Math.random()*3)];
+                }
                 state.pitcherSprite.play("pitcher_pitch_tell_"+state.ballType);
             } 
             else if (animation.key.indexOf("pitcher_pitch_tell_") != -1) {
@@ -555,14 +605,14 @@ let mainState = {
         let state = mainState.state;
         let graphics = state.graphics;
         graphics.clear();
-        
-        /*graphics.fillStyle(0xFF0000,1);
+        /*
+        graphics.fillStyle(0xFF0000,1);
         graphics.fillRectShape(state.barRect);
         graphics.fillStyle(state.hasSwung ? state.hitBall ? 0x00FF00 : 0x0000FF : 0xFFFF00,1);
         graphics.fillRectShape(state.targetRect);
         graphics.fillStyle(0xFFFFFF,1);
-        graphics.fillRectShape(state.line);*/
-
+        graphics.fillRectShape(state.line);
+        */
 
 
         //if the pitcher isn't pitching
@@ -584,7 +634,7 @@ let mainState = {
                     state.ballSprite.anims.play("bball_hit");
                     state.coach.anims.play('coach_whammy');
                     state.strikeText.text="WHAMMY!!";
-                    state.sounds[(state.ballType == 'fast') ? 'hitCheer' : 'hit'].play();
+                    state.sounds[(state.ballType == 'fast' || state.ballType == 'heat') ? 'hitCheer' : 'hit'].play();
                     state.strikeText.updateText();
                     let impact = this.add.sprite(state.ballSprite.x,state.ballSprite.y,'impact').setScale(2);
                     impact.anims.load("impact");
@@ -598,6 +648,10 @@ let mainState = {
                         state.strikeText.text="";
                         state.strikeText.updateText();
                         state.strikeCount = 0;
+                        if (state.homeRuns >= 20) {
+                            //GO TO YOU WIN
+                            
+                        }
                         state.needsRespawn = true;
                         state.pitcherSprite.play("pitcher_pitch_windup");
                     }, [], this);
@@ -608,7 +662,7 @@ let mainState = {
             if (state.hitBall) {
             //I've hit the ball and it hasn't respawned yet.
             
-                if (state.ballType == 'fast') {
+                if (state.ballType == 'fast' || state.ballType == 'heat') {
                     let impact = this.add.sprite(state.ballSprite.x,state.ballSprite.y,'impact').setScale(1);
                     impact.anims.load("impact");
                     impact.anims.play("impact");
@@ -634,7 +688,7 @@ let mainState = {
                     state.strikeText.text="";
                     state.strikeText.updateText();
                     state.line.x = config.width;
-                    if (state.strikeCount >= 2000) {
+                    if (state.strikeCount >= 3) {
                         game.scene.stop("mainState")
                         game.scene.start('intro');
                     }
@@ -642,13 +696,17 @@ let mainState = {
                     state.pitcherSprite.play("pitcher_pitch_windup");
                 }, [], this);
             } else {
-                state.line.x -= state.lineSpeed;
+                if (state.ballType == 'heat') {
+                    state.line.x -= (state.line.x >= 320) ? parseInt(state.lineSpeed/4) : state.lineSpeed;
+                } else {
+                    state.line.x -= state.lineSpeed;
+                }
                 state.ballSprite.x = state.line.x;
             }    
         } 
         mainState.scoreText.x = config.width-(mainState.scoreText.width+30);
         mainState.scoreText.y = 30;
-        mainState.scoreText.text = `${state.homeRuns} whammies!`;
+        mainState.scoreText.text = `${state.homeRuns} whammies!\n${state.strikeCount}/3 strikes`;
         mainState.scoreText.updateText();
     }
 }
