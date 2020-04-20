@@ -53,8 +53,8 @@ let introState = {
             frameHeight:47,
         });
         this.load.spritesheet('baseball','Sprites/Baseball.png',{
-            frameWidth: 30,
-            frameHeight: 30,
+            frameWidth: 40,
+            frameHeight: 40,
         });
         //this.load.audio('hitSoundCheer','Audio/hitcrowdcheer.mp3');
         
@@ -239,7 +239,6 @@ let mainState = {
             state.ballSprite.destroy();
         }
         let bball = game.add.sprite(config.width,config.height-145,'baseball').setScale(2);
-        bball.anims.load('bball_flash');
         switch (type) {
             case "fast":
                 bball.anims.load('bball_fast');
@@ -268,8 +267,8 @@ let mainState = {
         });
 
         this.load.spritesheet('baseball','Sprites/Baseball.png',{
-            frameWidth: 30,
-            frameHeight: 30,
+            frameWidth: 40,
+            frameHeight: 40,
         });
         this.load.spritesheet('impact','Sprites/Impact.png',{
             frameWidth: 28,
@@ -282,6 +281,10 @@ let mainState = {
         this.load.spritesheet('coach','Sprites/Coach.png',{
             frameWidth: 51,
             frameHeight: 49,
+        });
+        this.load.spritesheet('!!!','Sprites/!!!.png',{
+            frameWidth: 7,
+            frameHeight: 24,
         });
         this.load.image('fg_fence',"Sprites/Foreground.png");
         this.load.image("bg_field","Sprites/Background.png");
@@ -362,6 +365,18 @@ let mainState = {
 
         //player stuff
         state.playerSprite = this.add.sprite(80,config.height-160,'player').setScale(2);
+        state.hitIndicator = this.add.sprite(state.playerSprite.x,state.playerSprite.y-60,'!!!').setScale(2);
+        this.anims.create({
+            key: '!!!',
+            frames: this.anims.generateFrameNumbers('!!!'),
+            frameRate: 4,
+            yoyo: false,
+            repeat: -1,
+        });
+        state.hitIndicator.alpha = 0;
+        state.hitIndicator.anims.load('!!!');
+        state.hitIndicator.play('!!!');
+        //anims
         state.impactAnim = this.anims.create({
             key: 'impact',
             frames: this.anims.generateFrameNumbers('impact'),
@@ -409,14 +424,7 @@ let mainState = {
         });
         state.ballAnims.hit = this.anims.create({
             key: 'bball_hit',
-            frames: [{key:'baseball',frame:13},/*{key:'baseball',frame:13}*/],
-            frameRate: 18,
-            yoyo: false,
-            repeat: -1,
-        });
-        state.ballAnims.flash = this.anims.create({
-            key: 'bball_flash',
-            frames: [{key:'baseball',frame:12},{key:'baseball',frame:13}],
+            frames: [{key:'baseball',frame:16},/*{key:'baseball',frame:13}*/],
             frameRate: 18,
             yoyo: false,
             repeat: -1,
@@ -527,6 +535,7 @@ let mainState = {
             }
         });
 
+  
         state.playerSprite.anims.load('swing');
         state.playerSprite.anims.load('idle');
         state.playerSprite.on("animationcomplete",function(animation,frame) {
@@ -559,17 +568,10 @@ let mainState = {
         //if the pitcher isn't pitching
         if (!state.needsRespawn) {
             //Let's check if we should make the ball flash
-            if (Phaser.Geom.Intersects.RectangleToRectangle(state.targetRect,state.line)
-            && (!state.hasSwung && !state.hasMissed)) {
+             state.hitIndicator.alpha = (Phaser.Geom.Intersects.RectangleToRectangle(state.targetRect,state.line)
+            && (!state.hasSwung && !state.hasMissed)) ? 1 : 0;
 
-                if (state.ballSprite.anims.currentAnim.key != 'bball_flash') {
-                    state.ballSprite.anims.play('bball_flash');
-                }
-            } else {
-                if (state.ballSprite.anims.currentAnim.key != 'bball_'+state.ballType) {
-                    state.ballSprite.anims.play("bball_"+state.ballType);
-                }
-            }
+            
             //check if the player has swung
             if (state.keySpace.isDown && !state.hasSwung) {
                 state.playerSprite.anims.play('swing');
