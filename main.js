@@ -206,7 +206,7 @@ function createMainState() {
         hitBall : false,
         hasMissed : false,
         swingTime : 500, //ms
-        homeRuns : 0,
+        homeRuns : 19,
         playerSprite : null,
         pitcherSprite: null,
         swingAnim : null,
@@ -699,7 +699,7 @@ let mainState = {
                         if (state.homeRuns >= 20) {
                             //game.scene.stop("mainState")
                             state.bgMusic.stop();
-                            this.scene.start('endState');
+                            this.scene.start('endState',{win:true});
                         }
                         state.needsRespawn = true;
                         state.pitcherSprite.play("pitcher_pitch_windup");
@@ -742,7 +742,7 @@ let mainState = {
                     if (state.strikeCount >= 3) {
                         //game.scene.stop("mainState")
                         state.bgMusic.stop();
-                        this.scene.start('endState');
+                        this.scene.start('endState',{win:false});
                     }
                     state.needsRespawn = true;
                     state.pitcherSprite.play("pitcher_pitch_windup");
@@ -766,24 +766,31 @@ let mainState = {
 
 //region "End State"
 let endState = {
+    init : function(data) {
+        endState.win = data.win;
+    },
     preload: function() {
 
     },
     create: function() {
-        let didWin = mainState.homeRuns >= 20;
-        let winText = didWin ? "YOU WON" : "YOU LOST";
-        console.log("DidWin",winText);
         endState.hasProgressed = false;
+        endState.timeElapsed = 0;
+        if (endState.keyEsc) {
+            endState.keyEsc.isDown = false;
+        }
+        let didWin = endState.win;
+        let winText = didWin ? "YOU WON" : "YOU LOST";
         endState.bigText = this.add.text(config.width/2, config.height/2, winText, 
         { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif',align: "left", fontSize: 44}).setOrigin(0.5,0.5);;
         endState.playAgainText = this.add.text(config.width/2, (config.height/2)+60, "press ESC to play again", 
         { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif',align: "left", fontSize: 22}).setOrigin(0.5,0.5);
         endState.keyEsc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     },
-    update : function() {
-        endState.bigText.text = mainState.homeRuns >= 20 ? "YOU WON" : "YOU LOST";
+    update : function(time,delta) {
+        endState.timeElapsed += delta;
+        endState.bigText.text = endState.win ? "YOU WON" : "YOU LOST";
         endState.bigText.updateText();
-        if (endState.keyEsc.isDown && !endState.hasProgressed) {
+        if (endState.keyEsc.isDown && !endState.hasProgressed && endState.timeElapsed >= 500) {
             //this.scene.stop("endState");
             this.scene.start('mainState');
         }
