@@ -36,6 +36,7 @@ let introState = {
     skipped : false,
 
     toMain() {
+        introState.bgMusic.stop();
         game.scene.stop("intro")
         game.scene.start('mainState');
     },
@@ -56,10 +57,15 @@ let introState = {
             frameWidth: 80,
             frameHeight: 80,
         });
+        this.load.audio('intro_bgMusic','Audio/coach_ballad.mp3');
         //this.load.audio('hitSoundCheer','Audio/hitcrowdcheer.mp3');
         
     },
     create : function() {
+
+        introState.bgMusic = this.sound.add('intro_bgMusic', { volume: 0.5, loop: true });
+        introState.bgMusic.play();
+
         introState.hasProgressed = true;
         introState.skipped = false;
         introState.selectedIndex = 0;
