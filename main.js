@@ -561,7 +561,7 @@ let mainState = {
         state.pitcherSprite.on("animationcomplete",function(animation,frame){
             console.log(animation.key," ending");
             if (animation.key=='pitcher_pitch_windup') {
-                if (state.homeRuns == 19) {
+                if (state.homeRuns == 1) {
                     state.ballType = 'heat';
                 } else {
                     state.ballType = ["normal","fast","slow"][parseInt(Math.random()*3)];
