@@ -36,6 +36,7 @@ let introState = {
     skipped : false,
 
     toMain() {
+        introState.bgMusic.stop();
         game.scene.stop("intro")
         game.scene.start('mainState');
     },
@@ -56,10 +57,15 @@ let introState = {
             frameWidth: 80,
             frameHeight: 80,
         });
+        this.load.audio('intro_bgMusic','Audio/coach_ballad.mp3');
         //this.load.audio('hitSoundCheer','Audio/hitcrowdcheer.mp3');
         
     },
     create : function() {
+
+        introState.bgMusic = this.sound.add('intro_bgMusic', { volume: 0.5, loop: true });
+        introState.bgMusic.play();
+
         introState.hasProgressed = true;
         introState.skipped = false;
         introState.selectedIndex = 0;
@@ -301,7 +307,10 @@ let mainState = {
         });
         this.load.image('fg_fence',"Sprites/Foreground.png");
         this.load.image("bg_field","Sprites/Background.png");
-        this.load.image("fg_crowd","Sprites/Crowd.png");
+        this.load.spritesheet("fg_crowd","Sprites/Crowd.png",{
+            frameWidth: 640,
+            frameHeight: 480,
+        });
         this.load.audio('strikeSound', 'Audio/strike.mp3');
         this.load.audio('hitSoundCheer','Audio/hitcrowdcheer.mp3');
         this.load.audio('hitSound','Audio/hit.mp3');
@@ -312,7 +321,30 @@ let mainState = {
         this.cameras.main.backgroundColor = Phaser.Display.Color.HexStringToColor("#D97031");
 
         this.add.sprite(0,0,"bg_field").setScale(1).setOrigin(0,0);
-        this.add.sprite(0,0,"fg_crowd").setScale(1).setOrigin(0,0);
+        state.crowd = this.add.sprite(0,0,"fg_crowd").setScale(1).setOrigin(0,0);
+
+        this.anims.create({
+            key: `crowd_idle`,
+            frames: [{key:'fg_crowd',frame:0}],
+            frameRate: 1,
+            yoyo: false,
+            repeat: -1,
+        }); 
+        this.anims.create({
+            key: `crowd_cheer`,
+            frames: [{key:'fg_crowd',frame:0},{key:'fg_crowd',frame:1}],
+            frameRate: 4,
+            yoyo: true,
+            repeat: 8,
+        }); 
+        state.crowd.anims.load('crowd_idle');
+        state.crowd.anims.load('crowd_cheer');
+        state.crowd.anims.play('crowd_idle');
+        state.crowd.on("animationcomplete",function(animation,frame) {
+            if (animation.key == 'crowd_cheer') {
+                state.crowd.play('crowd_idle');
+            }
+        },this);
         //background & coach stuff
         this.anims.create({
             key: 'coach_idle',
@@ -369,6 +401,13 @@ let mainState = {
         state.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         mainState.scoreText = this.add.text(0, 0, ``, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif' });
         state.strikeText = this.add.text(30, 150, ``, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif', fontSize: 44, color: "red" });
+        state.coachText = this.add.text(140,20,``,{ 
+            fontFamily: 'Verdana, "Times New Roman", Tahoma, serif',
+            fontSize: 14,
+            align: "left", fixedWidth: 400,
+            wordWrap: { width: 350, useAdvancedWrap: true } 
+            }
+        );
 
         //sounds
         state.sounds = {};
@@ -561,7 +600,9 @@ let mainState = {
         state.pitcherSprite.on("animationcomplete",function(animation,frame){
             console.log(animation.key," ending");
             if (animation.key=='pitcher_pitch_windup') {
-                if (state.homeRuns == 1) {
+                state.coachText.text = GetCoachText(state.homeRuns,state.strikeCount,'pitch');
+                state.coachText.updateText();
+                if (state.homeRuns == 19) {
                     state.ballType = 'heat';
                 } else {
                     state.ballType = ["normal","fast","slow"][parseInt(Math.random()*3)];
@@ -599,8 +640,6 @@ let mainState = {
         state.pitcherSprite.anims.play('pitcher_pitch_windup');
     },
     update : function(time,delta) {
-        
-
         //console.log("delta_time:",delta);
         let state = mainState.state;
         let graphics = state.graphics;
@@ -633,8 +672,13 @@ let mainState = {
                     state.ballSprite.anims.load("bball_hit");
                     state.ballSprite.anims.play("bball_hit");
                     state.coach.anims.play('coach_whammy');
+                    state.coachText.text = GetCoachText(state.homeRuns,state.strikeCount,'homeRun');
+                    state.coachText.updateText();
                     state.strikeText.text="WHAMMY!!";
                     state.sounds[(state.ballType == 'fast' || state.ballType == 'heat') ? 'hitCheer' : 'hit'].play();
+                    if (state.ballType == 'fast' || state.ballType == 'heat') {
+                        state.crowd.anims.play('crowd_cheer');
+                    }
                     state.strikeText.updateText();
                     let impact = this.add.sprite(state.ballSprite.x,state.ballSprite.y,'impact').setScale(1);
                     impact.anims.load("impact");
@@ -649,8 +693,8 @@ let mainState = {
                         state.strikeText.updateText();
                         state.strikeCount = 0;
                         if (state.homeRuns >= 20) {
-                            //GO TO YOU WIN
-                            
+                            //game.scene.stop("mainState")
+                            this.scene.start('endState');
                         }
                         state.needsRespawn = true;
                         state.pitcherSprite.play("pitcher_pitch_windup");
@@ -683,14 +727,16 @@ let mainState = {
                 state.coach.anims.play('coach_strike');
                 state.sounds.strike.play();
                 state.strikeText.updateText();
+                state.coachText.text = GetCoachText(state.homeRuns,state.strikeCount,'strike');
+                state.coachText.updateText();
                 state.strikeCount +=1;
                 this.time.delayedCall(750, function() {
                     state.strikeText.text="";
                     state.strikeText.updateText();
                     state.line.x = config.width;
                     if (state.strikeCount >= 3) {
-                        game.scene.stop("mainState")
-                        game.scene.start('intro');
+                        //game.scene.stop("mainState")
+                        this.scene.start('endState');
                     }
                     state.needsRespawn = true;
                     state.pitcherSprite.play("pitcher_pitch_windup");
@@ -712,9 +758,37 @@ let mainState = {
 }
 //endregion
 
+//region "End State"
+let endState = {
+    preload: function() {
+
+    },
+    create: function() {
+        let didWin = mainState.homeRuns >= 20;
+        let winText = didWin ? "YOU WON" : "YOU LOST";
+        console.log("DidWin",winText);
+        endState.hasProgressed = false;
+        endState.bigText = this.add.text(config.width/2, config.height/2, winText, 
+        { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif',align: "left", fontSize: 44}).setOrigin(0.5,0.5);;
+        endState.playAgainText = this.add.text(config.width/2, (config.height/2)+60, "press ESC to play again", 
+        { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif',align: "left", fontSize: 22}).setOrigin(0.5,0.5);
+        endState.keyEsc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+    },
+    update : function() {
+        endState.bigText.text = mainState.homeRuns >= 20 ? "YOU WON" : "YOU LOST";
+        endState.bigText.updateText();
+        if (endState.keyEsc.isDown && !endState.hasProgressed) {
+            //this.scene.stop("endState");
+            this.scene.start('mainState');
+        }
+    }
+}
+//endregion
+
 //region Entrypoint
 var game = new Phaser.Game(config);
 game.scene.add('intro',introState);
 game.scene.add('mainState',mainState);
+game.scene.add('endState',endState)
 game.scene.start('intro');
 //endregion
