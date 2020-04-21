@@ -301,7 +301,10 @@ let mainState = {
         });
         this.load.image('fg_fence',"Sprites/Foreground.png");
         this.load.image("bg_field","Sprites/Background.png");
-        this.load.image("fg_crowd","Sprites/Crowd.png");
+        this.load.spritesheet("fg_crowd","Sprites/Crowd.png",{
+            frameWidth: 640,
+            frameHeight: 480,
+        });
         this.load.audio('strikeSound', 'Audio/strike.mp3');
         this.load.audio('hitSoundCheer','Audio/hitcrowdcheer.mp3');
         this.load.audio('hitSound','Audio/hit.mp3');
@@ -312,7 +315,30 @@ let mainState = {
         this.cameras.main.backgroundColor = Phaser.Display.Color.HexStringToColor("#D97031");
 
         this.add.sprite(0,0,"bg_field").setScale(1).setOrigin(0,0);
-        this.add.sprite(0,0,"fg_crowd").setScale(1).setOrigin(0,0);
+        state.crowd = this.add.sprite(0,0,"fg_crowd").setScale(1).setOrigin(0,0);
+
+        this.anims.create({
+            key: `crowd_idle`,
+            frames: [{key:'fg_crowd',frame:0}],
+            frameRate: 1,
+            yoyo: false,
+            repeat: -1,
+        }); 
+        this.anims.create({
+            key: `crowd_cheer`,
+            frames: [{key:'fg_crowd',frame:0},{key:'fg_crowd',frame:1}],
+            frameRate: 4,
+            yoyo: true,
+            repeat: 8,
+        }); 
+        state.crowd.anims.load('crowd_idle');
+        state.crowd.anims.load('crowd_cheer');
+        state.crowd.anims.play('crowd_idle');
+        state.crowd.on("animationcomplete",function(animation,frame) {
+            if (animation.key == 'crowd_cheer') {
+                state.crowd.play('crowd_idle');
+            }
+        },this);
         //background & coach stuff
         this.anims.create({
             key: 'coach_idle',
@@ -369,6 +395,13 @@ let mainState = {
         state.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         mainState.scoreText = this.add.text(0, 0, ``, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif' });
         state.strikeText = this.add.text(30, 150, ``, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif', fontSize: 44, color: "red" });
+        state.coachText = this.add.text(140,20,``,{ 
+            fontFamily: 'Verdana, "Times New Roman", Tahoma, serif',
+            fontSize: 14,
+            align: "left", fixedWidth: 400,
+            wordWrap: { width: 350, useAdvancedWrap: true } 
+            }
+        );
 
         //sounds
         state.sounds = {};
@@ -561,6 +594,8 @@ let mainState = {
         state.pitcherSprite.on("animationcomplete",function(animation,frame){
             console.log(animation.key," ending");
             if (animation.key=='pitcher_pitch_windup') {
+                state.coachText.text = GetCoachText(state.homeRuns,state.strikeCount,'pitch');
+                state.coachText.updateText();
                 if (state.homeRuns == 19) {
                     state.ballType = 'heat';
                 } else {
@@ -599,8 +634,6 @@ let mainState = {
         state.pitcherSprite.anims.play('pitcher_pitch_windup');
     },
     update : function(time,delta) {
-        
-
         //console.log("delta_time:",delta);
         let state = mainState.state;
         let graphics = state.graphics;
@@ -633,8 +666,13 @@ let mainState = {
                     state.ballSprite.anims.load("bball_hit");
                     state.ballSprite.anims.play("bball_hit");
                     state.coach.anims.play('coach_whammy');
+                    state.coachText.text = GetCoachText(state.homeRuns,state.strikeCount,'homeRun');
+                    state.coachText.updateText();
                     state.strikeText.text="WHAMMY!!";
                     state.sounds[(state.ballType == 'fast' || state.ballType == 'heat') ? 'hitCheer' : 'hit'].play();
+                    if (state.ballType == 'fast' || state.ballType == 'heat') {
+                        state.crowd.anims.play('crowd_cheer');
+                    }
                     state.strikeText.updateText();
                     let impact = this.add.sprite(state.ballSprite.x,state.ballSprite.y,'impact').setScale(1);
                     impact.anims.load("impact");
@@ -683,6 +721,8 @@ let mainState = {
                 state.coach.anims.play('coach_strike');
                 state.sounds.strike.play();
                 state.strikeText.updateText();
+                state.coachText.text = GetCoachText(state.homeRuns,state.strikeCount,'strike');
+                state.coachText.updateText();
                 state.strikeCount +=1;
                 this.time.delayedCall(750, function() {
                     state.strikeText.text="";
