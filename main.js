@@ -314,10 +314,14 @@ let mainState = {
         this.load.audio('strikeSound', 'Audio/strike.mp3');
         this.load.audio('hitSoundCheer','Audio/hitcrowdcheer.mp3');
         this.load.audio('hitSound','Audio/hit.mp3');
+        this.load.audio('baseballTheme','Audio/Baseball Jam.mp3');
     },
     create : function() {
         mainState.state = createMainState();
         let state = mainState.state;
+        
+        state.bgMusic = this.sound.add('baseballTheme', { volume: 0.5, loop: true });
+        state.bgMusic.play();
         this.cameras.main.backgroundColor = Phaser.Display.Color.HexStringToColor("#D97031");
 
         this.add.sprite(0,0,"bg_field").setScale(1).setOrigin(0,0);
@@ -694,6 +698,7 @@ let mainState = {
                         state.strikeCount = 0;
                         if (state.homeRuns >= 20) {
                             //game.scene.stop("mainState")
+                            state.bgMusic.stop();
                             this.scene.start('endState');
                         }
                         state.needsRespawn = true;
@@ -736,6 +741,7 @@ let mainState = {
                     state.line.x = config.width;
                     if (state.strikeCount >= 3) {
                         //game.scene.stop("mainState")
+                        state.bgMusic.stop();
                         this.scene.start('endState');
                     }
                     state.needsRespawn = true;
