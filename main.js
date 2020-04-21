@@ -693,8 +693,8 @@ let mainState = {
                         state.strikeText.updateText();
                         state.strikeCount = 0;
                         if (state.homeRuns >= 20) {
-                            //GO TO YOU WIN
-                            
+                            //game.scene.stop("mainState")
+                            this.scene.start('endState');
                         }
                         state.needsRespawn = true;
                         state.pitcherSprite.play("pitcher_pitch_windup");
@@ -735,8 +735,8 @@ let mainState = {
                     state.strikeText.updateText();
                     state.line.x = config.width;
                     if (state.strikeCount >= 3) {
-                        game.scene.stop("mainState")
-                        game.scene.start('intro');
+                        //game.scene.stop("mainState")
+                        this.scene.start('endState');
                     }
                     state.needsRespawn = true;
                     state.pitcherSprite.play("pitcher_pitch_windup");
@@ -758,9 +758,37 @@ let mainState = {
 }
 //endregion
 
+//region "End State"
+let endState = {
+    preload: function() {
+
+    },
+    create: function() {
+        let didWin = mainState.homeRuns >= 20;
+        let winText = didWin ? "YOU WON" : "YOU LOST";
+        console.log("DidWin",winText);
+        endState.hasProgressed = false;
+        endState.bigText = this.add.text(config.width/2, config.height/2, winText, 
+        { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif',align: "left", fontSize: 44}).setOrigin(0.5,0.5);;
+        endState.playAgainText = this.add.text(config.width/2, (config.height/2)+60, "press ESC to play again", 
+        { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif',align: "left", fontSize: 22}).setOrigin(0.5,0.5);
+        endState.keyEsc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+    },
+    update : function() {
+        endState.bigText.text = mainState.homeRuns >= 20 ? "YOU WON" : "YOU LOST";
+        endState.bigText.updateText();
+        if (endState.keyEsc.isDown && !endState.hasProgressed) {
+            //this.scene.stop("endState");
+            this.scene.start('mainState');
+        }
+    }
+}
+//endregion
+
 //region Entrypoint
 var game = new Phaser.Game(config);
 game.scene.add('intro',introState);
 game.scene.add('mainState',mainState);
+game.scene.add('endState',endState)
 game.scene.start('intro');
 //endregion
